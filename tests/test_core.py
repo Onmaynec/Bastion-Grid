@@ -1,4 +1,5 @@
 import copy
+from contextlib import closing
 import hashlib
 import json
 import sqlite3
@@ -54,6 +55,12 @@ class CoreTests(unittest.TestCase):
         case = self.case()
         return self.s.response(self.p['analyst'], {'asset_id': self.asset['id'], 'case_id': case['id'],
                                                   'action': 'isolate_host', 'reason': 'lab drill'})
+
+    def test_read_connection_closes_on_exit(self):
+        with self.s.connect() as db:
+            self.assertEqual(db.execute('SELECT 1').fetchone()[0], 1)
+        with self.assertRaises(sqlite3.ProgrammingError):
+            db.execute('SELECT 1')
 
     def test_identity_rejects_unknown_and_expired(self):
         for token in ['invalid', self.s.identity('c', 'expired', 'admin', -1)]:
@@ -251,7 +258,7 @@ class CoreTests(unittest.TestCase):
     def test_backup_restores_cases_and_evidence(self):
         bundle = self.bundle()
         target = Path(self.tmp.name)/'backup.sqlite'
-        with self.s.connect() as source, sqlite3.connect(target) as db:
+        with self.s.connect() as source, closing(sqlite3.connect(target)) as db:
             source.backup(db)
         restored = Store(target).export(self.p['auditor'])
         self.assertEqual(restored, bundle)

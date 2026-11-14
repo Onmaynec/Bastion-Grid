@@ -102,4 +102,4 @@ contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','versio
  'components':{'schemas':schemas,'securitySchemes':{'bearerAuth':{'type':'http','scheme':'bearer'},
               'sessionCookie':{'type':'apiKey','in':'cookie','name':'bg_session'}}}}
 if __name__=='__main__':
-    Path('spec/openapi.json').write_text(json.dumps(contract,ensure_ascii=False,indent=2)+'\n')
+    Path('spec/openapi.json').write_text(json.dumps(contract,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')

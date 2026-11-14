@@ -13,7 +13,7 @@ def main():
     parser.add_argument('--credentials')
     args = parser.parse_args()
     path = Path(args.credentials) if args.credentials else next(Path('var').glob('lab-credentials-*.json'))
-    credentials = json.loads(path.read_text())
+    credentials = json.loads(path.read_text(encoding='utf-8'))
     def call(who, route, method='GET', body=None, headers=None):
         request = Request(args.url+'/api/v1/'+route, method=method,
                           data=json.dumps(body).encode() if body is not None else None,
@@ -59,7 +59,7 @@ def main():
     assert job['status'] == 'APPROVED' and job['simulation_only']
     bundle = call('auditor', 'evidence/export')
     output = Path('var/demo-evidence.json')
-    output.write_text(json.dumps(bundle, ensure_ascii=False, indent=2))
+    output.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding='utf-8', newline='\n')
     print(json.dumps({'accepted': 12, 'duplicates': 12, 'alerts': 4, 'case': case['id'],
                       'response': job['status'], 'execution': False, 'bundle': str(output)}, ensure_ascii=False, indent=2))
 

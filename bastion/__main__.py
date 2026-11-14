@@ -1,4 +1,5 @@
 import argparse
+from contextlib import closing
 import json
 import os
 import sqlite3
@@ -27,7 +28,7 @@ def main():
     args = parser.parse_args()
     os.umask(0o077)
     if args.command == 'verify':
-        print(json.dumps(verify(json.loads(Path(args.bundle).read_text()), args.checkpoint), indent=2))
+        print(json.dumps(verify(json.loads(Path(args.bundle).read_text(encoding='utf-8')), args.checkpoint), indent=2))
         return
     store = Store(args.db)
     if args.command == 'init':
@@ -39,7 +40,7 @@ def main():
                               ('reviewer-two', 'lead'), ('auditor', 'auditor'), ('collector', 'collector')]:
             credentials[subject] = {'role': role, 'token': store.identity(args.tenant, subject, role)}
         output = Path(args.db).parent / f'lab-credentials-{__import__("hashlib").sha256(args.tenant.encode()).hexdigest()[:12]}.json'
-        output.write_text(json.dumps(credentials, indent=2))
+        output.write_text(json.dumps(credentials, indent=2), encoding='utf-8', newline='\n')
         output.chmod(0o600)
         print(f'Ключи на 24 часа: {output}. Вход в UI — ключ operator. Это не production identity.')
     elif args.command == 'serve':
@@ -54,7 +55,7 @@ def main():
         destination = Path(args.destination)
         if destination.exists():
             parser.error('Файл назначения уже существует')
-        with store.connect() as source, sqlite3.connect(destination) as target:
+        with store.connect() as source, closing(sqlite3.connect(destination)) as target:
             source.backup(target)
         print(f'Снимок создан: {destination}')
     elif args.command == 'revoke':

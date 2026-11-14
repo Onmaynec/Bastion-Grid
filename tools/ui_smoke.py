@@ -1,5 +1,8 @@
 """Optional browser verification: requires playwright and Chromium, not runtime dependencies."""
 import json
+import argparse
+import subprocess
+import sys
 import os
 import threading
 from pathlib import Path
@@ -9,13 +12,19 @@ from bastion.server import Server
 
 
 def main():
-    credentials = json.loads(next(Path('var').glob('lab-credentials-*.json')).read_text())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--seed', action='store_true')
+    args = parser.parse_args()
+    credentials = json.loads(next(Path('var').glob('lab-credentials-*.json')).read_text(encoding='utf-8'))
     output = Path('var/ui-check')
     output.mkdir(exist_ok=True)
     with Server(('127.0.0.1', 0), Store('var/bastion.sqlite3')) as server:
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         try:
+            if args.seed:
+                subprocess.run([sys.executable, 'tools/demo.py', '--url',
+                                f'http://127.0.0.1:{server.server_port}'], check=True)
             with sync_playwright() as pw:
                 options = {'headless': True}
                 if os.environ.get('CHROMIUM_EXECUTABLE'):

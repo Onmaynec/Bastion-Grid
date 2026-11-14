@@ -4,7 +4,7 @@
 
 | Проверка | Результат |
 |---|---|
-| `python -m unittest discover -s tests -v` | 42 теста пройдены |
+| `python -m unittest discover -s tests -v` | 43 теста пройдены |
 | 10 000 tenant-scoped отрицательных чтений | Чужие объекты не раскрыты; это детерминированная выборка, не property-based suite RFP |
 | 12 конкурентных одинаковых batch | 1 accepted, 11 duplicates |
 | Сквозной HTTP demo | 12 accepted, 12 duplicates, 4 alerts, 1 case, 1 evidence, 2 approvals |

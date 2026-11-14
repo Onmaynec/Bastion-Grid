@@ -6,7 +6,7 @@ from pathlib import Path
 
 class ContractTests(unittest.TestCase):
     def test_contract_routes(self):
-        contract = json.loads(Path('spec/openapi.json').read_text())
+        contract = json.loads(Path('spec/openapi.json').read_text(encoding='utf-8'))
         self.assertEqual(contract['openapi'], '3.1.0')
         self.assertEqual(sum(len(ops) for ops in contract['paths'].values()), 22)
         for ops in contract['paths'].values():
@@ -17,13 +17,13 @@ class ContractTests(unittest.TestCase):
             self.assertIn(ref, contract['components']['schemas'])
 
     def test_traceability_complete_and_honest(self):
-        spec = json.loads(Path('spec/requirements-r2.json').read_text())
-        coverage = json.loads(Path('docs/acceptance/coverage.json').read_text())
+        spec = json.loads(Path('spec/requirements-r2.json').read_text(encoding='utf-8'))
+        coverage = json.loads(Path('docs/acceptance/coverage.json').read_text(encoding='utf-8'))
         expected = {r['id'] for section in ['functional_requirements','nonfunctional_requirements'] for r in spec[section]}
         self.assertEqual(len(expected), 619)
         self.assertEqual(expected, {r['id'] for r in coverage['requirements']})
         self.assertFalse(coverage['full_rfp_accepted'])
-        tests = '\n'.join(p.read_text() for p in Path('tests').glob('test_*.py'))
+        tests = '\n'.join(p.read_text(encoding='utf-8') for p in Path('tests').glob('test_*.py'))
         for req in coverage['requirements']:
             for test in req['tests']:
                 self.assertIn('def '+test+'(', tests)

@@ -30,7 +30,7 @@ PARTIAL = {
 }
 
 def build():
-    source=json.loads(Path('spec/requirements-r2.json').read_text())
+    source=json.loads(Path('spec/requirements-r2.json').read_text(encoding='utf-8'))
     records=[]
     for section in ['functional_requirements','nonfunctional_requirements']:
         for item in source[section]:
@@ -40,13 +40,13 @@ def build():
     output={'release':'0.1.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
             'formal_acceptance':{'passed':0,'total':len(source['acceptance_tests']),
                                  'e2e_passed':0,'e2e_total':len(source['omega_e2e'])}}
-    Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n')
+    Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')
     lines=['# Матрица реализации 0.1.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
            '`not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.','',
            '| Требование | Состояние | Локальные тесты |','|---|---|---|']
     for r in records:
         lines.append('| '+r['id']+' | '+r['status']+' | '+', '.join(r['tests'])+' |')
-    Path('docs/acceptance/TRACEABILITY.md').write_text('\n'.join(lines)+'\n')
+    Path('docs/acceptance/TRACEABILITY.md').write_text('\n'.join(lines)+'\n', encoding='utf-8', newline='\n')
 
 if __name__=='__main__':
     build()

@@ -75,9 +75,9 @@ class Store:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as db:
             db.execute('PRAGMA journal_mode=WAL')
-            db.executescript(Path(__file__).with_name('schema.sql').read_text())
+            db.executescript(Path(__file__).with_name('schema.sql').read_text(encoding='utf-8'))
 
-    def connect(self):
+    def _connect(self):
         db = sqlite3.connect(self.path, timeout=10, isolation_level=None)
         db.row_factory = sqlite3.Row
         db.execute('PRAGMA foreign_keys=ON')
@@ -85,8 +85,16 @@ class Store:
         return db
 
     @contextmanager
+    def connect(self):
+        db = self._connect()
+        try:
+            yield db
+        finally:
+            db.close()
+
+    @contextmanager
     def tx(self):
-        db = self.connect()
+        db = self._connect()
         try:
             db.execute('BEGIN IMMEDIATE')
             yield db
