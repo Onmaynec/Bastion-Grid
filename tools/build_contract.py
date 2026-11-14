@@ -15,6 +15,7 @@ schemas = {
     'Error': obj({k: {'type':'string'} for k in ['error_code','message','request_id','trace_id','version']},
                  ['error_code','message','request_id','trace_id','version']),
     'AssetInput': obj({'hostname': S, 'os': S, 'owner': S, 'group': S,
+                       'sensitivity': enum('public','internal','confidential','restricted'),
                        'criticality': {'type':'integer','minimum':1,'maximum':5}}, ['hostname','os']),
     'RuleInput': obj({'name': S, 'field': enum('event_type','outcome','process_name','severity'),
                      'operator': enum('eq','gte','contains'), 'value': {'type':['string','number']},
@@ -58,6 +59,30 @@ schemas = {
                 'properties':{'subject':S,'role':S,'tenant':S,'csrf':{'type':['string','null']},'profile':S}},
     'Logout': obj({'logged_out':{'const':True}}, ['logged_out']),
 }
+schemas.update({
+    'AccessPolicy': obj({'groups': {'type':'array','minItems':1,'maxItems':50,'uniqueItems':True,
+                                   'items':{'type':'string','minLength':1,'maxLength':100}},
+                         'max_sensitivity': enum('public','internal','confidential','restricted'),
+                         'assigned_only': {'type':'boolean'}}, ['groups','max_sensitivity','assigned_only']),
+    'IdentityInput': obj({'subject': {'type':'string','minLength':1,'maxLength':100},
+                         'role':enum('admin','analyst','lead','auditor','collector'),
+                         'ttl_seconds':{'type':'integer','minimum':60,'maximum':86400},
+                         'policy':ref('AccessPolicy')}, ['subject','role','ttl_seconds','policy']),
+    'Identity': {'type':'object','required':['id','subject','role','expires','revoked','version','policy','status'],
+                 'properties':{'id':S,'subject':S,'role':S,'expires':{'type':'number'},'revoked':{'type':'integer'},
+                               'version':I,'policy':ref('AccessPolicy'),'status':enum('active','revoked','expired'),
+                               'token':{'type':'string','description':'Показывается один раз при issue/rotate'},
+                               'token_display':{'const':'once'}}},
+    'RotateIdentity': obj({'ttl_seconds':{'type':'integer','minimum':60,'maximum':86400}}, ['ttl_seconds']),
+    'RevokeIdentity': obj({'reason':{'type':'string','minLength':1,'maxLength':1000}}, ['reason']),
+    'ChangePolicy': obj({'policy':ref('AccessPolicy')}, ['policy']),
+    'SessionList': obj({'items':{'type':'array','items':{'type':'object',
+                        'required':['id','subject','role','created_at','last_seen','expires'],
+                        'properties':{'id':S,'subject':S,'role':S,'created_at':{'type':'number'},
+                                      'last_seen':{'type':'number'},'expires':{'type':'number'}}}}}, ['items']),
+    'IdentityList': obj({'items':{'type':'array','items':ref('Identity')}}, ['items']),
+    'RevokedSession': obj({'revoked':{'const':True}}, ['revoked']),
+})
 paths={}
 def endpoint(path,method,summary,request=None,response='Resource',version=False,key=False,anonymous=False):
     op={'operationId':method+'_'+path.replace('/','_').replace('{','').replace('}',''), 'summary':summary,
@@ -96,7 +121,14 @@ endpoint('evidence/export','get','Экспорт без цифровой под�
 endpoint('session','post','Лабораторный вход','SessionInput','Session',anonymous=True)
 endpoint('session','get','Текущий сеанс',response='Session')
 endpoint('logout','post','Завершить текущий сеанс','Empty','Logout')
-contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.1.0',
+endpoint('identities','get','Учётные записи текущего тенанта без ключей',response='IdentityList')
+endpoint('identities','post','Выдать лабораторный ключ один раз','IdentityInput','Identity')
+endpoint('identities/{id}/rotate','post','Отозвать старый ключ и сеансы, выдать новый','RotateIdentity','Identity',version=True)
+endpoint('identities/{id}/revoke','post','Отозвать доступ и закрыть сеансы','RevokeIdentity','Identity',version=True)
+endpoint('identities/{id}/policy','post','Изменить атрибуты доступа и закрыть сеансы','ChangePolicy','Identity',version=True)
+endpoint('sessions','get','Собственные сеансы или все сеансы для полного admin',response='SessionList')
+endpoint('sessions/{id}/revoke','post','Завершить один разрешённый сеанс','Empty','RevokedSession')
+contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.2.0',
  'description':'Контракт реализованного лабораторного подмножества. Отличия маршрутов от целевого RFP — ADR-004. Не production API.'},
  'servers':[{'url':'http://127.0.0.1:8080'}], 'paths':paths,
  'components':{'schemas':schemas,'securitySchemes':{'bearerAuth':{'type':'http','scheme':'bearer'},

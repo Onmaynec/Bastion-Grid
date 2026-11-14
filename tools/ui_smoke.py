@@ -39,7 +39,7 @@ def main():
                 page.locator('.stats').wait_for()
                 assert page.locator('.number').count() == 4
                 page.screenshot(path=str(output/'overview.png'), full_page=True)
-                for key in ['alerts', 'assets', 'events', 'rules', 'cases', 'responses', 'audit']:
+                for key in ['alerts', 'assets', 'events', 'rules', 'cases', 'responses', 'audit', 'identities', 'sessions']:
                     page.locator(f'[data-page="{key}"]').click()
                     page.locator('#content .panel').wait_for()
                     assert page.locator('#content').inner_text().strip()
@@ -51,6 +51,38 @@ def main():
                 page.locator('#modal').wait_for(state='hidden')
                 page.get_by_role('cell', name='<img src=x onerror=alert(1)>', exact=True).wait_for()
                 assert page.locator('#content img').count() == 0
+                page.locator('[data-page="identities"]').click()
+                page.locator('[data-action="new-identity"]').click()
+                page.locator('#f-subject').fill('ui-reader')
+                page.locator('#f-groups').fill('unrelated-group')
+                page.locator('#submit-modal').click()
+                page.locator('#issued-key').wait_for()
+                reader_key = page.locator('#issued-key').input_value()
+                assert len(reader_key) == 43
+                page.locator('#close-modal').click()
+                page.get_by_role('cell', name='ui-reader', exact=True).wait_for()
+                assert page.locator('#issued-key').count() == 0
+                page.screenshot(path=str(output/'access.png'), full_page=True)
+                reader = browser.new_page()
+                reader.goto(f'http://127.0.0.1:{server.server_port}')
+                reader.locator('#token').fill(reader_key)
+                reader.locator('#login-form button').click()
+                reader.locator('.stats').wait_for()
+                assert reader.locator('.number').all_text_contents() == ['0','0','0','0']
+                assert reader.locator('[data-page="identities"]').count() == 0
+                reader.close()
+                row = page.get_by_role('row').filter(has=page.get_by_role('cell', name='ui-reader', exact=True))
+                row.locator('[data-action="identity-rotate"]').click()
+                page.locator('#submit-modal').click()
+                page.locator('#issued-key').wait_for()
+                assert page.locator('#issued-key').input_value() != reader_key
+                page.locator('#close-modal').click()
+                row = page.get_by_role('row').filter(has=page.get_by_role('cell', name='ui-reader', exact=True))
+                row.locator('[data-action="identity-revoke"]').click()
+                page.locator('#f-reason').fill('UI smoke completed')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_role('cell', name='revoked', exact=True).wait_for()
                 page.set_viewport_size({'width': 390, 'height': 844})
                 page.locator('[data-page="overview"]').click()
                 page.locator('.stats').wait_for()
@@ -60,7 +92,7 @@ def main():
                 page.locator('#login').wait_for(state='visible')
                 assert not errors, errors
                 browser.close()
-                print('UI: 8 sections, create form, escaped XSS, 390px layout, logout — PASS')
+                print('UI: 10 sections, asset, scoped identity, rotation/revocation, XSS, 390px, logout — PASS')
         finally:
             server.shutdown()
             thread.join()

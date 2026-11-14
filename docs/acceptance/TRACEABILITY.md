@@ -1,4 +1,4 @@
-# Матрица реализации 0.1.0
+# Матрица реализации 0.2.0
 
 `partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. `not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.
 
@@ -7,13 +7,13 @@
 | IAM-001 | not_implemented |  |
 | IAM-002 | partial_lab | test_revocation_invalidates_cookie, test_logout_invalidates_session |
 | IAM-003 | not_implemented |  |
-| IAM-004 | partial_lab | test_role_denial_audited |
+| IAM-004 | partial_lab | test_asset_group_and_sensitivity_filter, test_assigned_only_cases_and_related_objects |
 | IAM-005 | not_implemented |  |
 | IAM-006 | partial_lab | test_approval_quorum_and_no_execution, test_self_approval_even_if_role_elevated |
 | IAM-007 | not_implemented |  |
 | IAM-008 | not_implemented |  |
-| IAM-009 | partial_lab | test_revocation_immediate |
-| IAM-010 | not_implemented |  |
+| IAM-009 | partial_lab | test_revocation_immediate, test_rotation_invalidates_all_target_cookies_and_old_bearer |
+| IAM-010 | partial_lab | test_sessions_list_hides_secrets, test_revoke_one_session_keeps_other |
 | IAM-011 | partial_lab | test_cross_tenant_transition, test_10000_scoped_reads |
 | IAM-012 | partial_lab | test_role_denial_audited |
 | TEN-001 | partial_lab | test_tenant_from_server_only |
@@ -193,7 +193,7 @@
 | OPS-006 | not_implemented |  |
 | OPS-007 | not_implemented |  |
 | OPS-008 | not_implemented |  |
-| OPS-009 | not_implemented |  |
+| OPS-009 | partial_lab | test_v1_upgrade_preserves_data_and_keys_closes_sessions, test_future_schema_fails_closed |
 | OPS-010 | not_implemented |  |
 | OPS-011 | not_implemented |  |
 | OPS-012 | not_implemented |  |

@@ -5,8 +5,8 @@
 | Угроза | Реализованная мера | Проверка | Остаток |
 |---|---|---|---|
 | Подмена tenant в JSON | Закрытая схема и scope из identity | test_tenant_from_server_only | Нет PostgreSQL RLS |
-| IDOR по известному чужому ID | Tenant в SQL и одинаковый 404 | test_cross_tenant_transition | Нет property-based suite всех методов RFP |
-| Кража устаревшего сеанса | TTL и проверка revocation в каждом запросе | test_revocation_invalidates_cookie | Нет OIDC refresh rotation |
+| IDOR по известному чужому ID | Tenant в SQL и одинаковый 404 | test_cross_tenant_transition | Добавлен ABAC по связанным объектам; полного property-based suite RFP нет |
+| Кража устаревшего сеанса | TTL и проверка revocation в каждом запросе | test_revocation_invalidates_cookie | Ротация lab key и отзыв сеансов есть; OIDC refresh rotation нет |
 | CSRF и DNS rebinding | CSRF, SameSite, Origin, Host allowlist | test_csrf, test_cross_origin_and_host | Только HTTP loopback |
 | Повтор сообщения | Unique scoped key + content digest | test_concurrent_dedup | Нет broker replay/partition fault tests |
 | Потеря части batch | Одна SQL-транзакция | test_invalid_batch_is_atomic | Нет испытаний power loss |
@@ -19,3 +19,5 @@
 | DoS | Body 1 МиБ, event 16 КиБ, batch 100, login limit | test_bad_event_time_and_oversize | Нет общих tenant quotas, bounded HTTP thread pool |
 
 Не подключать реальные production endpoints. Использовать синтетические данные. Это граница применимости стенда, а не дополнительное разрешение на выполнение каких-либо действий.
+
+Проверки 0.2.0: `test_events_alerts_cases_evidence_responses_share_scope`, `test_audit_export_rules_replay_cannot_bypass_scopes`, `test_stale_principal_cannot_mutate_after_revocation`, `test_policy_change_blocks_inflight_request`. Доступ ограничивается атрибутами актива, а не анализом содержимого произвольного поля event attributes.

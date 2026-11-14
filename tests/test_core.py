@@ -204,7 +204,9 @@ class CoreTests(unittest.TestCase):
 
     def test_self_approval_even_if_role_elevated(self):
         j = self.job()
-        p = dict(self.p['analyst'], role='admin')
+        with self.s.tx() as db:
+            db.execute("UPDATE identities SET role='admin' WHERE subject='analyst'")
+        p = self.s.authenticate(self.tokens['analyst'])
         with self.assertRaises(Problem) as e:
             self.s.approve(p, j['id'], 1)
         self.assertEqual(e.exception.code, 'self_approval')

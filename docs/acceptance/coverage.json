@@ -1,5 +1,5 @@
 {
-  "release": "0.1.0",
+  "release": "0.2.0",
   "scope": "local-lab",
   "full_rfp_accepted": false,
   "requirements": [
@@ -28,7 +28,8 @@
       "id": "IAM-004",
       "status": "partial_lab",
       "tests": [
-        "test_role_denial_audited"
+        "test_asset_group_and_sensitivity_filter",
+        "test_assigned_only_cases_and_related_objects"
       ],
       "accepted": false
     },
@@ -63,14 +64,18 @@
       "id": "IAM-009",
       "status": "partial_lab",
       "tests": [
-        "test_revocation_immediate"
+        "test_revocation_immediate",
+        "test_rotation_invalidates_all_target_cookies_and_old_bearer"
       ],
       "accepted": false
     },
     {
       "id": "IAM-010",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_sessions_list_hides_secrets",
+        "test_revoke_one_session_keeps_other"
+      ],
       "accepted": false
     },
     {
@@ -1211,8 +1216,11 @@
     },
     {
       "id": "OPS-009",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_v1_upgrade_preserves_data_and_keys_closes_sessions",
+        "test_future_schema_fails_closed"
+      ],
       "accepted": false
     },
     {

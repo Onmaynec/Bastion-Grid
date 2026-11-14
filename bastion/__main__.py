@@ -31,6 +31,8 @@ def main():
         print(json.dumps(verify(json.loads(Path(args.bundle).read_text(encoding='utf-8')), args.checkpoint), indent=2))
         return
     store = Store(args.db)
+    if store.migration_backup:
+        print(f'Перед миграцией сохранён snapshot: {store.migration_backup}')
     if args.command == 'init':
         with store.connect() as db:
             if db.execute('SELECT 1 FROM identities WHERE tenant=?', (args.tenant,)).fetchone():
@@ -60,7 +62,9 @@ def main():
         print(f'Снимок создан: {destination}')
     elif args.command == 'revoke':
         with store.tx() as db:
-            changed = db.execute('UPDATE identities SET revoked=1 WHERE tenant=? AND subject=?',
+            db.execute('DELETE FROM sessions WHERE identity_hash IN (SELECT token_hash FROM identities '
+                       'WHERE tenant=? AND subject=?)', (args.tenant, args.subject))
+            changed = db.execute('UPDATE identities SET revoked=1,version=version+1 WHERE tenant=? AND subject=?',
                                  (args.tenant, args.subject)).rowcount
             store.audit(db, {'tenant': args.tenant, 'subject': 'local-administrator'},
                         'identity.revoked', args.subject, {'changed': changed})

@@ -5,7 +5,8 @@
 | Этап | Содержание | Условие завершения |
 |---|---|---|
 | 0.1.0 Local baseline | Транзакционный сквозной lab-контур | Локальные регрессии; **не завершает M1** |
-| 0.2.0 Identity и metadata | PostgreSQL/RLS, миграции, OIDC Code+PKCE, MFA assurance, ABAC, revocation, policy versions | IAM/TEN P0 и отрицательные тесты всех ресурсов |
+| 0.2.0 Access Control | Лабораторные identities, ротация, сеансы, application ABAC, schema migration | Локальные тесты; **Identity/M1 не завершён** |
+| Identity completion | PostgreSQL/RLS, OIDC Code+PKCE, MFA assurance, подписанные политики | IAM/TEN P0 и отрицательные тесты всех ресурсов |
 | 0.3.0 Durable telemetry | Gateway, mTLS enrollment, schema registry, broker, quotas, DLQ, metrics | ACK/replay/poison/fairness с реальными отказами |
 | 0.4.0 Endpoint baseline | Видимые Windows/Linux службы, native telemetry, bounded encrypted spool, signed update | Совместимость ОС и 24-часовые ресурсные прогоны |
 | 0.5.0 Analytics | ClickHouse/search, temporal rules, watermark, rule fixtures, replay jobs | Детерминизм, quality suite и R1 search benchmark |

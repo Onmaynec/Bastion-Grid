@@ -11,8 +11,11 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .migrations import migrate
+from .policy import DEFAULT_POLICY, SENSITIVITY, asset_allowed, policy_of, unrestricted
+
 ROLES = {
-    'admin': {'read', 'asset', 'ingest', 'rule', 'publish', 'case', 'request', 'approve', 'audit'},
+    'admin': {'read', 'asset', 'ingest', 'rule', 'publish', 'case', 'request', 'approve', 'audit', 'identity'},
     'analyst': {'read', 'case', 'request'},
     'lead': {'read', 'case', 'request', 'approve', 'publish', 'audit'},
     'auditor': {'read', 'audit'},
@@ -75,7 +78,9 @@ class Store:
         Path(path).parent.mkdir(parents=True, exist_ok=True)
         with self.connect() as db:
             db.execute('PRAGMA journal_mode=WAL')
-            db.executescript(Path(__file__).with_name('schema.sql').read_text(encoding='utf-8'))
+            self.migration_backup = migrate(db)
+        from .access import AccessControl
+        self.access = AccessControl(self)
 
     def _connect(self):
         db = sqlite3.connect(self.path, timeout=10, isolation_level=None)
@@ -109,8 +114,10 @@ class Store:
         require(role in ROLES)
         token = secrets.token_urlsafe(32)
         with self.tx() as db:
-            db.execute('INSERT INTO identities VALUES(?,?,?,?,?,0)',
-                       (hashlib.sha256(token.encode()).hexdigest(), tenant, subject, role, time.time()+lifetime))
+            db.execute('INSERT INTO identities(token_hash,tenant,subject,role,expires,revoked,id,version,policy) '
+                       'VALUES(?,?,?,?,?,0,?,1,?)',
+                       (hashlib.sha256(token.encode()).hexdigest(), tenant, subject, role, time.time()+lifetime,
+                        uid(), canonical(DEFAULT_POLICY)))
         return token
 
     def authenticate(self, token):
@@ -121,8 +128,21 @@ class Store:
         require(row is not None, 'unauthorized', 'Требуется действующая учётная запись', 401)
         return dict(row)
 
+    def live_principal(self, db, p):
+        if 'token_hash' not in p:
+            return  # Trusted in-process worker/CLI context; never accepted from HTTP input.
+        row = db.execute('SELECT * FROM identities WHERE token_hash=? AND tenant=? AND revoked=0 AND expires>?',
+                         (p['token_hash'], p['tenant'], time.time())).fetchone()
+        require(row is not None and row['version'] == p.get('version') and row['role'] == p['role']
+                and row['policy'] == p.get('policy'), 'unauthorized', 'Учётная запись изменилась; повторите вход', 401)
+        if p.get('session_id'):
+            session = db.execute('SELECT 1 FROM sessions WHERE id=? AND identity_hash=? AND expires>?',
+                                 (p['session_id'], p['token_hash'], time.time())).fetchone()
+            require(session is not None, 'unauthorized', 'Сеанс завершён', 401)
+
     def authorize(self, p, permission):
-        if permission not in ROLES[p['role']]:
+        if (permission not in ROLES[p['role']] or
+                (permission in {'audit', 'rule', 'publish', 'identity'} and not unrestricted(p))):
             with self.tx() as db:
                 self.audit(db, p, 'access.denied', permission, {'decision': 'deny', 'policy_version': 1})
             raise Problem(403, 'forbidden', 'Недостаточно полномочий')
@@ -137,11 +157,34 @@ class Store:
         db.execute('INSERT INTO audit(tenant,body,prev_hash,hash) VALUES(?,?,?,?)',
                    (p['tenant'], canonical(body), previous, hash_value))
 
-    def get(self, db, p, kind, object_id):
+    def raw_object(self, db, tenant, kind, object_id):
         row = db.execute('SELECT body FROM objects WHERE tenant=? AND kind=? AND id=?',
-                         (p['tenant'], kind, object_id)).fetchone()
-        require(row is not None, 'not_found', 'Объект не найден', 404)
-        return json.loads(row['body'])
+                         (tenant, kind, object_id)).fetchone()
+        return json.loads(row['body']) if row else None
+
+    def visible(self, db, p, kind, obj):
+        if obj is None:
+            return False
+        if kind == 'assets':
+            return asset_allowed(p, obj)
+        if kind == 'rules':
+            return unrestricted(p)
+        if kind in {'events', 'alerts'}:
+            asset = self.raw_object(db, p['tenant'], 'assets', obj.get('asset_id'))
+            return asset is not None and asset_allowed(p, asset)
+        if kind == 'cases':
+            alert = self.raw_object(db, p['tenant'], 'alerts', obj.get('alert_id'))
+            return (self.visible(db, p, 'alerts', alert) and
+                    (not policy_of(p)['assigned_only'] or obj.get('owner') == p['subject']))
+        if kind in {'responses', 'evidence'}:
+            case = self.raw_object(db, p['tenant'], 'cases', obj.get('case_id'))
+            return self.visible(db, p, 'cases', case)
+        return False
+
+    def get(self, db, p, kind, object_id):
+        obj = self.raw_object(db, p['tenant'], kind, object_id)
+        require(self.visible(db, p, kind, obj), 'not_found', 'Объект не найден', 404)
+        return obj
 
     def put(self, db, p, kind, body, action):
         db.execute('INSERT INTO objects VALUES(?,?,?,?,?) ON CONFLICT(tenant,kind,id) '
@@ -160,21 +203,31 @@ class Store:
             if kind == 'audit':
                 return [dict(r) | {'body': json.loads(r['body'])} for r in db.execute(
                     'SELECT seq,body,prev_hash,hash FROM audit WHERE tenant=? ORDER BY seq', (p['tenant'],))]
-            return [json.loads(r[0]) for r in db.execute(
-                'SELECT body FROM objects WHERE tenant=? AND kind=? ORDER BY id LIMIT 500', (p['tenant'], kind))]
+            items = []
+            for row in db.execute('SELECT body FROM objects WHERE tenant=? AND kind=? ORDER BY id', (p['tenant'], kind)):
+                obj = json.loads(row[0])
+                if self.visible(db, p, kind, obj):
+                    items.append(obj)
+                    if len(items) == 500:
+                        break
+            return items
 
     def create_asset(self, p, body):
         self.authorize(p, 'asset')
-        exact_fields(body, ['hostname', 'os', 'owner', 'criticality', 'group'], ['hostname', 'os'])
+        exact_fields(body, ['hostname', 'os', 'owner', 'criticality', 'group', 'sensitivity'], ['hostname', 'os'])
         name, os_name = text_field(body, 'hostname'), text_field(body, 'os')
         criticality = body.get('criticality', 3)
         require(type(criticality) is int and 1 <= criticality <= 5)
         for k in ('owner', 'group'):
             if k in body:
                 text_field(body, k)
-        asset = self.base(p, hostname=name, os=os_name, owner=body.get('owner', ''),
+        sensitivity = body.get('sensitivity', 'internal')
+        require(sensitivity in SENSITIVITY)
+        asset = self.base(p, sensitivity=sensitivity, hostname=name, os=os_name, owner=body.get('owner', ''),
                           group=body.get('group', 'lab'), criticality=criticality, presence='unknown')
+        require(asset_allowed(p, asset), 'forbidden', 'Актив вне разрешённого scope', 403)
         with self.tx() as db:
+            self.live_principal(db, p)
             return self.put(db, p, 'assets', asset, 'asset.created')
 
     def rule(self, p, body):
@@ -197,6 +250,7 @@ class Store:
         rule = self.base(p, name=name, field=body['field'], operator=body['operator'], value=value,
                          severity=severity, technique=body.get('technique', ''), status='draft')
         with self.tx() as db:
+            self.live_principal(db, p)
             return self.put(db, p, 'rules', rule, 'rule.created')
 
     @staticmethod
@@ -212,6 +266,7 @@ class Store:
     def publish(self, p, object_id, version):
         self.authorize(p, 'publish')
         with self.tx() as db:
+            self.live_principal(db, p)
             rule = self.get(db, p, 'rules', object_id)
             require(rule['version'] == version, 'version_conflict', 'Версия изменилась', 409)
             require(rule['created_by'] != p['subject'], 'self_approval', 'Нужен независимый рецензент', 403)
@@ -253,6 +308,7 @@ class Store:
             normalized.append((e, event_time))
         accepted, duplicates = [], []
         with self.tx() as db:
+            self.live_principal(db, p)
             for e, event_time in normalized:
                 asset = self.get(db, p, 'assets', e['asset_id'])
                 fingerprint = digest(e)
@@ -316,9 +372,14 @@ class Store:
             query += " AND json_extract(body,'$.attributes.event_type')=?"
             params.append(body['event_type'])
         with self.connect() as db:
-            rows = db.execute(query+' ORDER BY seq LIMIT ?', (*params, limit+1)).fetchall()
-        return {'items': [dict(json.loads(r['body']), sequence=r['seq']) for r in rows[:limit]],
-                'next_cursor': rows[limit-1]['seq'] if len(rows) > limit else None,
+            rows = []
+            for row in db.execute(query+' ORDER BY seq', params):
+                event = json.loads(row['body'])
+                if self.visible(db, p, 'events', event):
+                    rows.append(dict(event, sequence=row['seq']))
+                    if len(rows) == limit+1:
+                        break
+        return {'items': rows[:limit], 'next_cursor': rows[limit-1]['sequence'] if len(rows) > limit else None,
                 'order': 'ingest_sequence'}
 
     def create_case(self, p, body, key):
@@ -326,8 +387,11 @@ class Store:
         exact_fields(body, ['title', 'alert_id', 'owner'], ['title', 'alert_id', 'owner'])
         for field in body:
             text_field(body, field)
+        require(not policy_of(p)['assigned_only'] or body['owner'] == p['subject'],
+                'forbidden', 'Можно создавать только назначенные себе кейсы', 403)
         require(isinstance(key, str) and 1 <= len(key) <= 128, message='Нужен Idempotency-Key')
         with self.tx() as db:
+            self.live_principal(db, p)
             old = db.execute('SELECT * FROM idempotency WHERE tenant=? AND subject=? AND operation=? AND key=?',
                              (p['tenant'], p['subject'], 'case.create', key)).fetchone()
             if old:
@@ -346,6 +410,7 @@ class Store:
         reason = text_field(body, 'reason', 2000)
         target = text_field(body, 'status')
         with self.tx() as db:
+            self.live_principal(db, p)
             case = self.get(db, p, 'cases', object_id)
             require(case['version'] == version, 'version_conflict', 'Версия изменилась; обновите карточку', 409)
             require(target in STATES[case['status']], 'invalid_transition', 'Недопустимый переход', 409)
@@ -366,6 +431,7 @@ class Store:
         ttl = body.get('ttl_seconds', 300)
         require(type(ttl) is int and 30 <= ttl <= 900)
         with self.tx() as db:
+            self.live_principal(db, p)
             asset = self.get(db, p, 'assets', body['asset_id'])
             case = self.get(db, p, 'cases', body['case_id'])
             alert = self.get(db, p, 'alerts', case['alert_id'])
@@ -379,6 +445,7 @@ class Store:
     def approve(self, p, object_id, version):
         self.authorize(p, 'approve')
         with self.tx() as db:
+            self.live_principal(db, p)
             job = self.get(db, p, 'responses', object_id)
             require(job['version'] == version, 'version_conflict', 'Версия изменилась', 409)
             require(job['expires_at'] > time.time(), 'expired', 'Срок согласования истёк', 409)
@@ -398,6 +465,7 @@ class Store:
             text_field(body, k, 65536 if k == 'content' else 200)
         raw = body['content'].encode()
         with self.tx() as db:
+            self.live_principal(db, p)
             case = self.get(db, p, 'cases', body['case_id'])
             obj = self.base(p, name=body['name'], case_id=case['id'], sha256=hashlib.sha256(raw).hexdigest(),
                             size=len(raw), content_base64=base64.b64encode(raw).decode(), legal_hold=True)

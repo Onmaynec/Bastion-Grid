@@ -4,8 +4,10 @@ from pathlib import Path
 
 PARTIAL = {
  'IAM-002':['test_revocation_invalidates_cookie','test_logout_invalidates_session'],
- 'IAM-004':['test_role_denial_audited'], 'IAM-006':['test_approval_quorum_and_no_execution','test_self_approval_even_if_role_elevated'],
- 'IAM-009':['test_revocation_immediate'], 'IAM-011':['test_cross_tenant_transition','test_10000_scoped_reads'],
+ 'IAM-004':['test_asset_group_and_sensitivity_filter','test_assigned_only_cases_and_related_objects'], 'IAM-006':['test_approval_quorum_and_no_execution','test_self_approval_even_if_role_elevated'],
+ 'IAM-009':['test_revocation_immediate','test_rotation_invalidates_all_target_cookies_and_old_bearer'],
+ 'IAM-010':['test_sessions_list_hides_secrets','test_revoke_one_session_keeps_other'],
+ 'OPS-009':['test_v1_upgrade_preserves_data_and_keys_closes_sessions','test_future_schema_fails_closed'], 'IAM-011':['test_cross_tenant_transition','test_10000_scoped_reads'],
  'IAM-012':['test_role_denial_audited'], 'TEN-001':['test_tenant_from_server_only'],
  'TEN-002':['test_10000_scoped_reads','test_search_cursor_and_filter'], 'TEN-012':['test_10000_scoped_reads'],
  'AST-001':['test_durable_ack_restart_and_dedup'], 'AST-006':['test_http_create_and_tenant_spoof'],
@@ -37,11 +39,11 @@ def build():
             identifier=item['id']
             records.append({'id':identifier,'status':'partial_lab' if identifier in PARTIAL else 'not_implemented',
                             'tests':PARTIAL.get(identifier,[]), 'accepted':False})
-    output={'release':'0.1.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
+    output={'release':'0.2.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
             'formal_acceptance':{'passed':0,'total':len(source['acceptance_tests']),
                                  'e2e_passed':0,'e2e_total':len(source['omega_e2e'])}}
     Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')
-    lines=['# Матрица реализации 0.1.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
+    lines=['# Матрица реализации 0.2.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
            '`not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.','',
            '| Требование | Состояние | Локальные тесты |','|---|---|---|']
     for r in records:
