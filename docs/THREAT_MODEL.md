@@ -15,7 +15,7 @@
 | Выполнение произвольной команды | Нет dispatcher, allowlist только заявок | test_no_arbitrary_command | Реального response нет |
 | Подмена evidence | Body hash в acquisition audit + content hash | test_tampered_payload_and_metadata | Нет подписи/WORM |
 | Обрезка цепочки | Независимый ожидаемый checkpoint | test_audit_tamper_and_truncation | Доверие к checkpoint внешнее |
-| XSS | Экранирование и CSP | tools/ui_smoke.py | Браузерный прогон заблокирован средой |
+| XSS | Экранирование и CSP | tools/ui_smoke.py | Базовый прогон CI пройден; полный XSS аудит не выполнен |
 | DoS | Body 1 МиБ, event 16 КиБ, batch 100, login limit | test_bad_event_time_and_oversize | Нет общих tenant quotas, bounded HTTP thread pool |
 
 Не подключать реальные production endpoints. Использовать синтетические данные. Это граница применимости стенда, а не дополнительное разрешение на выполнение каких-либо действий.
