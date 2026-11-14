@@ -1,4 +1,4 @@
-# Матрица реализации 0.2.0
+# Матрица реализации 0.3.0
 
 `partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. `not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.
 
@@ -20,7 +20,7 @@
 | TEN-002 | partial_lab | test_10000_scoped_reads, test_search_cursor_and_filter |
 | TEN-003 | not_implemented |  |
 | TEN-004 | not_implemented |  |
-| TEN-005 | not_implemented |  |
+| TEN-005 | partial_lab | test_quota_concurrency_cannot_oversubscribe, test_one_tenant_quota_does_not_block_another |
 | TEN-006 | not_implemented |  |
 | TEN-007 | not_implemented |  |
 | TEN-008 | not_implemented |  |
@@ -67,18 +67,18 @@
 | LNX-012 | not_implemented |  |
 | ING-001 | not_implemented |  |
 | ING-002 | partial_lab | test_bad_event_time_and_oversize |
-| ING-003 | not_implemented |  |
+| ING-003 | partial_lab | test_registered_source_binds_collector_and_assets, test_admin_cannot_spoof_registered_collector |
 | ING-004 | partial_lab | test_concurrent_dedup, test_idempotency_conflict_rolls_back_batch |
 | ING-005 | partial_lab | test_durable_ack_restart_and_dedup |
-| ING-006 | not_implemented |  |
+| ING-006 | partial_lab | test_backpressure_relieved_after_processing |
 | ING-007 | not_implemented |  |
 | ING-008 | not_implemented |  |
-| ING-009 | not_implemented |  |
+| ING-009 | partial_lab | test_three_attempts_dead_letter_and_redacted_metadata, test_manual_retry_does_not_duplicate_logical_effects |
 | ING-010 | not_implemented |  |
 | ING-011 | partial_lab | test_bad_event_time_and_oversize |
 | ING-012 | not_implemented |  |
-| ING-013 | not_implemented |  |
-| ING-014 | not_implemented |  |
+| ING-013 | partial_lab | test_health_routes_and_error_contract |
+| ING-014 | partial_lab | test_poison_event_does_not_rollback_healthy_event |
 | ING-015 | partial_lab | test_search_cursor_and_filter |
 | ING-016 | not_implemented |  |
 | ING-017 | not_implemented |  |
@@ -193,7 +193,7 @@
 | OPS-006 | not_implemented |  |
 | OPS-007 | not_implemented |  |
 | OPS-008 | not_implemented |  |
-| OPS-009 | partial_lab | test_v1_upgrade_preserves_data_and_keys_closes_sessions, test_future_schema_fails_closed |
+| OPS-009 | partial_lab | test_v1_upgrade_preserves_data_and_keys_closes_sessions, test_future_schema_fails_closed, test_v2_to_v3_preserves_live_sessions_and_event_state |
 | OPS-010 | not_implemented |  |
 | OPS-011 | not_implemented |  |
 | OPS-012 | not_implemented |  |

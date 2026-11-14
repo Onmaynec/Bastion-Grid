@@ -1,5 +1,5 @@
 {
-  "release": "0.2.0",
+  "release": "0.3.0",
   "scope": "local-lab",
   "full_rfp_accepted": false,
   "requirements": [
@@ -126,8 +126,11 @@
     },
     {
       "id": "TEN-005",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_quota_concurrency_cannot_oversubscribe",
+        "test_one_tenant_quota_does_not_block_another"
+      ],
       "accepted": false
     },
     {
@@ -416,8 +419,11 @@
     },
     {
       "id": "ING-003",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_registered_source_binds_collector_and_assets",
+        "test_admin_cannot_spoof_registered_collector"
+      ],
       "accepted": false
     },
     {
@@ -439,8 +445,10 @@
     },
     {
       "id": "ING-006",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_backpressure_relieved_after_processing"
+      ],
       "accepted": false
     },
     {
@@ -457,8 +465,11 @@
     },
     {
       "id": "ING-009",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_three_attempts_dead_letter_and_redacted_metadata",
+        "test_manual_retry_does_not_duplicate_logical_effects"
+      ],
       "accepted": false
     },
     {
@@ -483,14 +494,18 @@
     },
     {
       "id": "ING-013",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_health_routes_and_error_contract"
+      ],
       "accepted": false
     },
     {
       "id": "ING-014",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_poison_event_does_not_rollback_healthy_event"
+      ],
       "accepted": false
     },
     {
@@ -1219,7 +1234,8 @@
       "status": "partial_lab",
       "tests": [
         "test_v1_upgrade_preserves_data_and_keys_closes_sessions",
-        "test_future_schema_fails_closed"
+        "test_future_schema_fails_closed",
+        "test_v2_to_v3_preserves_live_sessions_and_event_state"
       ],
       "accepted": false
     },

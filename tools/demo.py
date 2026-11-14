@@ -30,7 +30,11 @@ def main():
                'operator': 'eq', 'value': 'failure', 'severity': 'high', 'technique': 'T1110'})
     call('reviewer-one', f'rules/{rule["id"]}/publish', 'POST', {}, {'If-Match': str(rule['version'])})
     run = str(uuid.uuid4())
-    events = [{'event_id': f'{run}-{i}', 'source_id': 'synthetic-fixture', 'asset_id': assets[i%4]['id'],
+    collector = next(i for i in call('operator', 'identities')['items'] if i['subject']=='collector')
+    source_id = 'synthetic-'+run
+    source = call('operator', 'telemetry/sources', 'POST', {'name': 'Synthetic fixture', 'source_id': source_id,
+                  'collector_id': collector['id'], 'asset_ids': [a['id'] for a in assets]})
+    events = [{'event_id': f'{run}-{i}', 'source_id': source_id, 'asset_id': assets[i%4]['id'],
                'event_time': f'2026-11-14T07:{i:02d}:00Z', 'schema_version': 1,
                'attributes': {'event_type': 'authentication', 'outcome': 'failure' if i%3==0 else 'success',
                               'process_name': 'lab-fixture', 'severity': 4 if i%3==0 else 1}}
@@ -57,6 +61,10 @@ def main():
     job = call('reviewer-one', f'responses/{job["id"]}/approvals', 'POST', {}, {'If-Match': str(job['version'])})
     job = call('reviewer-two', f'responses/{job["id"]}/approvals', 'POST', {}, {'If-Match': str(job['version'])})
     assert job['status'] == 'APPROVED' and job['simulation_only']
+    health = call('auditor', 'telemetry/health')
+    source_stats = next(x for x in call('operator', 'telemetry/sources')['items'] if x['id']==source['id'])
+    assert source_stats['accepted_count']==12 and source_stats['duplicate_count']==12
+    assert health['counts']['done'] >= 12
     bundle = call('auditor', 'evidence/export')
     output = Path('var/demo-evidence.json')
     output.write_text(json.dumps(bundle, ensure_ascii=False, indent=2), encoding='utf-8', newline='\n')

@@ -8,7 +8,7 @@ import time
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, parse_qs
 
 from . import __version__
 from .core import Problem, Store, exact_fields, require, text_field, uid
@@ -44,7 +44,7 @@ class Server(ThreadingHTTPServer):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = 'BastionGrid/0.2'
+    server_version = 'BastionGrid/0.3'
 
     def log_message(self, *_):
         pass  # No tokens, payloads, or query strings in access logs.
@@ -178,7 +178,26 @@ class Handler(BaseHTTPRequestHandler):
             require(parts[:2] == ['api', 'v1'], 'not_found', 'Маршрут не найден', 404)
             tail = parts[2:]
             result = None
-            if tail == ['identities'] and self.command == 'GET':
+            if tail == ['telemetry', 'sources'] and self.command == 'GET':
+                result = s.telemetry.sources(p)
+            elif tail == ['telemetry', 'sources'] and self.command == 'POST':
+                result = s.telemetry.create_source(p, body)
+            elif len(tail) == 4 and tail[:2] == ['telemetry', 'sources'] and tail[3] == 'state' and self.command == 'POST':
+                result = s.telemetry.source_state(p, tail[2], body, self.version())
+            elif tail == ['telemetry', 'health'] and self.command == 'GET':
+                result = s.telemetry.health(p)
+            elif tail == ['telemetry', 'quotas'] and self.command == 'GET':
+                result = s.telemetry.quotas(p)
+            elif tail == ['telemetry', 'quotas'] and self.command == 'POST':
+                result = s.telemetry.set_quotas(p, body, self.version())
+            elif tail == ['telemetry', 'dead-letters'] and self.command == 'GET':
+                query = parse_qs(urlsplit(self.path).query)
+                require(set(query) <= {'after', 'limit'} and all(len(v)==1 for v in query.values()))
+                result = s.telemetry.dead_letters(p, int(query.get('after', ['0'])[0]), int(query.get('limit', ['50'])[0]))
+            elif len(tail) == 4 and tail[:2] == ['telemetry', 'dead-letters'] and tail[3] == 'retry' and self.command == 'POST':
+                require(tail[2].isdecimal())
+                result = s.telemetry.retry_dead(p, int(tail[2]), body, self.version())
+            elif tail == ['identities'] and self.command == 'GET':
                 result = s.access.list_identities(p)
             elif tail == ['identities'] and self.command == 'POST':
                 result = s.access.issue(p, body)
@@ -220,8 +239,9 @@ class Handler(BaseHTTPRequestHandler):
             headers = {'ETag': f'"{result["version"]}"'} if 'version' in result else {}
             self.reply(200, result, headers)
         except Problem as e:
+            headers = {'Retry-After': '60'} if e.status == 429 else {}
             self.reply(e.status, {'error_code': e.code, 'message': e.message, 'request_id': self.request_id,
-                                  'trace_id': self.request_id, 'version': __version__})
+                                  'trace_id': self.request_id, 'version': __version__}, headers)
         except (ValueError, TypeError, KeyError, RecursionError):
             self.reply(400, {'error_code': 'invalid_request', 'message': 'Неверный формат запроса',
                              'request_id': self.request_id, 'trace_id': self.request_id, 'version': __version__})

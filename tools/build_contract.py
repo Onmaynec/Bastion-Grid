@@ -83,6 +83,39 @@ schemas.update({
     'IdentityList': obj({'items':{'type':'array','items':ref('Identity')}}, ['items']),
     'RevokedSession': obj({'revoked':{'const':True}}, ['revoked']),
 })
+schemas.update({
+    'SourceInput': obj({'name':S,'source_id':S,'collector_id':S,
+                        'asset_ids':{'type':'array','minItems':1,'maxItems':100,'uniqueItems':True,'items':S}},
+                       ['name','source_id','collector_id','asset_ids']),
+    'Source': {'type':'object','required':['id','name','source_id','collector_id','asset_ids','enabled','version',
+                                         'created_at','last_seen','accepted_count','duplicate_count'],
+               'properties':{'id':S,'name':S,'source_id':S,'collector_id':S,'asset_ids':{'type':'array','items':S},
+                             'enabled':{'type':'integer','enum':[0,1]},'version':I,'created_at':S,
+                             'last_seen':{'type':['string','null']},'accepted_count':I,'duplicate_count':I}},
+    'SourceList':obj({'items':{'type':'array','items':ref('Source')}},['items']),
+    'SourceState':obj({'enabled':{'type':'boolean'},'reason':{'type':'string','minLength':1,'maxLength':1000}},
+                      ['enabled','reason']),
+    'QuotaInput':obj({'max_events_per_minute':{'type':'integer','minimum':1,'maximum':1000000},
+                     'max_bytes_per_day':{'type':'integer','minimum':1024,'maximum':107374182400},
+                     'max_pending':{'type':'integer','minimum':1,'maximum':1000000}},
+                    ['max_events_per_minute','max_bytes_per_day','max_pending']),
+    'Health':{'type':'object','required':['counts','stored_events','oldest_pending_seconds','worker','quotas',
+                                       'profile','automatic_attempts','status'],
+              'properties':{'counts':obj({k:I for k in ['pending','retry','dead','done']}, ['pending','retry','dead','done']),
+                            'stored_events':I,'oldest_pending_seconds':{'type':['number','null']},
+                            'worker':{'type':['object','null'],'properties':{'last_attempt':{'type':'number'},
+                                  'last_success':{'type':['number','null']},'last_error_code':{'type':['string','null']}}},
+                            'quotas':ref('Quotas'),'profile':{'const':'local-sqlite'},'automatic_attempts':{'const':3},
+                            'status':enum('ok','backlog','degraded')}},
+    'DeadLetters':obj({'items':{'type':'array','items':obj({'seq':I,'source_id':S,'event_id':S,'attempts':I,
+                        'error_code':S,'work_revision':I,'accepted_at':{'type':'number'}},
+                       ['seq','source_id','event_id','attempts','error_code','work_revision','accepted_at'])},
+                       'next_cursor':{'type':['integer','null']}}, ['items','next_cursor']),
+    'RetryDead':obj({'reason':{'type':'string','minLength':1,'maxLength':1000}},['reason']),
+    'Requeued':obj({'sequence':I,'state':{'const':'pending'},'version':I},['sequence','state','version']),
+})
+schemas['Quotas']=obj(schemas['QuotaInput']['properties'] | {'version':I},
+                     ['max_events_per_minute','max_bytes_per_day','max_pending','version'])
 paths={}
 def endpoint(path,method,summary,request=None,response='Resource',version=False,key=False,anonymous=False):
     op={'operationId':method+'_'+path.replace('/','_').replace('{','').replace('}',''), 'summary':summary,
@@ -128,7 +161,24 @@ endpoint('identities/{id}/revoke','post','Отозвать доступ и за�
 endpoint('identities/{id}/policy','post','Изменить атрибуты доступа и закрыть сеансы','ChangePolicy','Identity',version=True)
 endpoint('sessions','get','Собственные сеансы или все сеансы для полного admin',response='SessionList')
 endpoint('sessions/{id}/revoke','post','Завершить один разрешённый сеанс','Empty','RevokedSession')
-contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.2.0',
+endpoint('telemetry/sources','get','Зарегистрированные источники тенанта',response='SourceList')
+endpoint('telemetry/sources','post','Привязать источник к collector и активам','SourceInput','Source')
+endpoint('telemetry/sources/{id}/state','post','Приостановить или возобновить источник','SourceState','Source',version=True)
+endpoint('telemetry/health','get','Состояние локального конвейера',response='Health')
+endpoint('telemetry/quotas','get','Действующие квоты тенанта',response='Quotas')
+endpoint('telemetry/quotas','post','Транзакционно изменить квоты','QuotaInput','Quotas',version=True)
+endpoint('telemetry/dead-letters','get','Метаданные ошибок без raw payload',response='DeadLetters')
+paths['/api/v1/telemetry/dead-letters']['get']['parameters']=[
+    {'name':'after','in':'query','schema':{'type':'integer','minimum':0,'default':0}},
+    {'name':'limit','in':'query','schema':{'type':'integer','minimum':1,'maximum':100,'default':50}},
+]
+endpoint('telemetry/dead-letters/{id}/retry','post','Повторить обработку без изменения исходного события',
+         'RetryDead','Requeued',version=True)
+for item in paths.values():
+    for operation in item.values():
+        operation['responses']['429']['headers']={'Retry-After':{'schema':{'type':'integer'},
+            'description':'Рекомендуемый интервал повторного запроса в секундах; это не обещание освобождения квоты.'}}
+contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.3.0',
  'description':'Контракт реализованного лабораторного подмножества. Отличия маршрутов от целевого RFP — ADR-004. Не production API.'},
  'servers':[{'url':'http://127.0.0.1:8080'}], 'paths':paths,
  'components':{'schemas':schemas,'securitySchemes':{'bearerAuth':{'type':'http','scheme':'bearer'},

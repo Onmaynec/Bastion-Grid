@@ -198,6 +198,45 @@ class MigrationTests(unittest.TestCase):
             Store(path)  # idempotent; no second ALTER or key rotation
             self.assertEqual(s.authenticate('legacy-key')['id'], p['id'])
 
+    def test_v2_to_v3_preserves_live_sessions_and_event_state(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'v2.sqlite'
+            db = sqlite3.connect(path)
+            db.executescript(Path('bastion/schema.sql').read_text(encoding='utf-8'))
+            for statement in [
+                'ALTER TABLE identities ADD COLUMN id TEXT',
+                'ALTER TABLE identities ADD COLUMN version INTEGER NOT NULL DEFAULT 1',
+                'ALTER TABLE identities ADD COLUMN policy TEXT',
+                'CREATE UNIQUE INDEX identities_id ON identities(id)',
+                'ALTER TABLE sessions ADD COLUMN id TEXT',
+                'ALTER TABLE sessions ADD COLUMN created_at REAL NOT NULL DEFAULT 0',
+                'ALTER TABLE sessions ADD COLUMN last_seen REAL NOT NULL DEFAULT 0',
+                'CREATE UNIQUE INDEX sessions_id ON sessions(id)',
+                'INSERT INTO schema_version VALUES(2)',
+            ]:
+                db.execute(statement)
+            key = hashlib.sha256(b'old-key').hexdigest()
+            db.execute('INSERT INTO identities VALUES(?,?,?,?,?,?,?,?,?)',
+                       (key,'a','owner','admin',time.time()+300,0,'old-id',1,canonical(DEFAULT_POLICY)))
+            db.execute('INSERT INTO sessions VALUES(?,?,?,?,?,?,?)',
+                       ('session-hash',key,'csrf',time.time()+300,'session-id',time.time(),time.time()))
+            for i in range(2):
+                db.execute('INSERT INTO events(tenant,source_id,event_id,event_time,body,digest,processed) '
+                           'VALUES(?,?,?,?,?,?,?)', ('a','legacy',str(i),'2026-11-14T00:00:00Z',
+                            canonical({'ingest_time':'2026-11-14T00:00:00Z'}),'digest',i))
+            db.commit(); db.close()
+            store = Store(path)
+            principal = store.authenticate('old-key')
+            self.assertEqual(store.access.sessions(principal)['items'][0]['id'], 'session-id')
+            health = store.telemetry.health(principal)
+            self.assertEqual(health['counts']['pending'], 1)
+            self.assertEqual(health['counts']['done'], 1)
+            self.assertIn('.pre-v3-', store.migration_backup)
+            snapshot = sqlite3.connect(store.migration_backup)
+            self.assertEqual(snapshot.execute('SELECT MAX(version) FROM schema_version').fetchone()[0], 2)
+            snapshot.close()
+            self.assertIsNone(Store(path).migration_backup)
+
     def test_future_schema_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp)/'future.sqlite'

@@ -5,6 +5,7 @@ import subprocess
 import sys
 import os
 import threading
+from unittest.mock import patch
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from bastion.core import Store
@@ -25,6 +26,22 @@ def main():
             if args.seed:
                 subprocess.run([sys.executable, 'tools/demo.py', '--url',
                                 f'http://127.0.0.1:{server.server_port}'], check=True)
+            # Safe processor fault fixture: no failure injection endpoint exists in the product API.
+            principal = server.store.authenticate(credentials['operator']['token'])
+            asset = server.store.list(principal, 'assets')[0]
+            original = server.store.detect_event
+            def controlled_failure(db, row):
+                if row['event_id']=='ui-dead':
+                    raise ValueError('controlled UI fixture')
+                return original(db, row)
+            with patch.object(server.store, 'detect_event', side_effect=controlled_failure):
+                server.store.ingest(principal, {'events': [{'event_id':'ui-dead', 'source_id':'ui-fault-fixture',
+                    'asset_id':asset['id'], 'event_time':'2026-11-14T07:00:00Z', 'schema_version':1,
+                    'attributes':{'event_type':'diagnostic'}}]})
+                for _ in range(3):
+                    server.store.process()
+                    with server.store.tx() as db:
+                        db.execute("UPDATE events SET next_attempt=0 WHERE event_id='ui-dead'")
             with sync_playwright() as pw:
                 options = {'headless': True}
                 if os.environ.get('CHROMIUM_EXECUTABLE'):
@@ -39,10 +56,41 @@ def main():
                 page.locator('.stats').wait_for()
                 assert page.locator('.number').count() == 4
                 page.screenshot(path=str(output/'overview.png'), full_page=True)
-                for key in ['alerts', 'assets', 'events', 'rules', 'cases', 'responses', 'audit', 'identities', 'sessions']:
+                for key in ['alerts', 'assets', 'events', 'rules', 'cases', 'responses', 'audit', 'identities', 'sessions', 'telemetry']:
                     page.locator(f'[data-page="{key}"]').click()
-                    page.locator('#content .panel').wait_for()
+                    page.locator('#content .panel').first.wait_for()
                     assert page.locator('#content').inner_text().strip()
+                page.locator('[data-page="telemetry"]').click()
+                page.locator('[data-action="retry-dead"]').wait_for()
+                page.screenshot(path=str(output/'telemetry.png'), full_page=True)
+                page.locator('[data-action="retry-dead"]').click()
+                page.locator('#f-reason').fill('Controlled fixture removed')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                server.store.process()
+                page.locator('#refresh').click()
+                page.get_by_text('Ошибок обработки нет', exact=True).wait_for()
+                page.locator('[data-action="source-state"]').first.click()
+                page.locator('#f-reason').fill('Maintenance test')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_text('Приостановлен', exact=True).wait_for()
+                page.locator('[data-action="source-state"]').first.click()
+                page.locator('#f-reason').fill('Maintenance completed')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_text('Приём включён', exact=True).wait_for()
+                page.locator('[data-action="edit-quotas"]').click()
+                page.locator('#f-max_events_per_minute').fill('20000')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_text('20000', exact=True).wait_for()
+                page.locator('[data-action="new-source"]').click()
+                page.locator('#f-name').fill('UI collector source')
+                page.locator('[name="asset"]').first.check()
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_role('cell', name='UI collector source', exact=True).wait_for()
                 page.locator('[data-page="assets"]').click()
                 page.locator('[data-action="new-asset"]').click()
                 page.locator('#f-hostname').fill('<img src=x onerror=alert(1)>')
@@ -92,7 +140,7 @@ def main():
                 page.locator('#login').wait_for(state='visible')
                 assert not errors, errors
                 browser.close()
-                print('UI: 10 sections, asset, scoped identity, rotation/revocation, XSS, 390px, logout — PASS')
+                print('UI: 11 sections, source binding/pause/resume, quotas, DLQ retry, access, XSS, 390px — PASS')
         finally:
             server.shutdown()
             thread.join()

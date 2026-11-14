@@ -81,6 +81,8 @@ class Store:
             self.migration_backup = migrate(db)
         from .access import AccessControl
         self.access = AccessControl(self)
+        from .telemetry import Telemetry
+        self.telemetry = Telemetry(self)
 
     def _connect(self):
         db = sqlite3.connect(self.path, timeout=10, isolation_level=None)
@@ -307,9 +309,11 @@ class Store:
                 raise Problem(400, 'invalid_time', 'Требуется ISO 8601 с часовым поясом')
             normalized.append((e, event_time))
         accepted, duplicates = [], []
+        accepted_bytes = 0
         with self.tx() as db:
             self.live_principal(db, p)
             for e, event_time in normalized:
+                self.telemetry.check_source(db, p, e)
                 asset = self.get(db, p, 'assets', e['asset_id'])
                 fingerprint = digest(e)
                 old = db.execute('SELECT seq,digest FROM events WHERE tenant=? AND source_id=? AND event_id=?',
@@ -317,46 +321,89 @@ class Store:
                 if old:
                     require(old['digest'] == fingerprint, 'idempotency_conflict', 'Event ID имеет другое содержимое', 409)
                     duplicates.append(old['seq'])
+                    self.telemetry.accepted_source(db, p, e['source_id'], duplicate=True)
                     continue
                 event = dict(e, tenant_id=p['tenant'], ingest_time=utc(), event_time=event_time,
-                             parser_version='canonical-v1', classification='internal', trace_id=uid())
-                cur = db.execute('INSERT INTO events(tenant,source_id,event_id,event_time,body,digest) '
-                                 'VALUES(?,?,?,?,?,?)', (p['tenant'], e['source_id'], e['event_id'],
-                                                        event_time, canonical(event), fingerprint))
+                             parser_version='canonical-v1', classification=asset.get('sensitivity', 'internal'), trace_id=uid(),
+                             origin={'identity_id': p.get('id'), 'mode': 'collector' if p['role']=='collector' else 'admin-injection'})
+                cur = db.execute('INSERT INTO events(tenant,source_id,event_id,event_time,body,digest,accepted_at) '
+                                 'VALUES(?,?,?,?,?,?,?)', (p['tenant'], e['source_id'], e['event_id'],
+                                                        event_time, canonical(event), fingerprint, time.time()))
                 accepted.append(cur.lastrowid)
+                accepted_bytes += len(canonical(e).encode())
+                self.telemetry.accepted_source(db, p, e['source_id'])
                 asset.update(last_seen=event['ingest_time'], presence='online', version=asset['version']+1)
                 self.put(db, p, 'assets', asset, 'asset.heartbeat')
+            self.telemetry.reserve(db, p, len(accepted), accepted_bytes)
             self.audit(db, p, 'events.accepted', 'batch', {'accepted': len(accepted), 'duplicates': len(duplicates)})
         return {'accepted': accepted, 'duplicates': duplicates, 'durable': True, 'detection_complete': False}
 
+    def detect_event(self, db, row):
+        p = {'tenant': row['tenant'], 'subject': 'detection-worker', 'role': 'admin'}
+        rules = [json.loads(r[0]) for r in db.execute(
+            "SELECT body FROM objects WHERE tenant=? AND kind='rules'", (p['tenant'],))]
+        event = json.loads(row['body'])
+        for rule in rules:
+            if rule['status'] != 'published' or not self.matches(rule, event):
+                continue
+            exists = db.execute('SELECT 1 FROM detections WHERE tenant=? AND rule_id=? '
+                                'AND rule_version=? AND event_seq=?',
+                                (p['tenant'], rule['id'], rule['version'], row['seq'])).fetchone()
+            if exists:
+                continue
+            alert = self.base(p, title=rule['name'], severity=rule['severity'], status='open',
+                              rule_id=rule['id'], rule_version=rule['version'],
+                              event_seq=row['seq'], asset_id=event['asset_id'],
+                              explanation={'field': rule['field'], 'operator': rule['operator'],
+                                           'expected': rule['value'], 'observed': event['attributes'].get(rule['field'])})
+            self.put(db, p, 'alerts', alert, 'alert.created')
+            db.execute('INSERT INTO detections VALUES(?,?,?,?,?)',
+                       (p['tenant'], rule['id'], rule['version'], row['seq'], alert['id']))
+
     def process(self, limit=100):
-        count = 0
-        with self.tx() as db:
-            rows = db.execute('SELECT * FROM events WHERE processed=0 ORDER BY seq LIMIT ?', (limit,)).fetchall()
-            for row in rows:
+        require(type(limit) is int and 1 <= limit <= 1000)
+        # Select a bounded round-robin slice across tenants. Each effect commits independently.
+        with self.connect() as db:
+            sequence = [r['seq'] for r in db.execute(
+                "SELECT seq FROM (SELECT seq, ROW_NUMBER() OVER (PARTITION BY tenant ORDER BY seq) AS turn "
+                "FROM events WHERE processed=0 AND work_state<>'dead' AND next_attempt<=?) "
+                "ORDER BY turn,seq LIMIT ?", (time.time(), limit))]
+        completed = 0
+        for seq in sequence:
+            with self.tx() as db:
+                now = time.time()
+                row = db.execute("SELECT * FROM events WHERE seq=? AND processed=0 AND work_state<>'dead' "
+                                 "AND next_attempt<=?", (seq, now)).fetchone()
+                if row is None:
+                    continue
                 p = {'tenant': row['tenant'], 'subject': 'detection-worker', 'role': 'admin'}
-                rules = [json.loads(r[0]) for r in db.execute(
-                    "SELECT body FROM objects WHERE tenant=? AND kind='rules'", (p['tenant'],))]
-                event = json.loads(row['body'])
-                for rule in rules:
-                    if rule['status'] != 'published' or not self.matches(rule, event):
-                        continue
-                    exists = db.execute('SELECT 1 FROM detections WHERE tenant=? AND rule_id=? '
-                                        'AND rule_version=? AND event_seq=?',
-                                        (p['tenant'], rule['id'], rule['version'], row['seq'])).fetchone()
-                    if exists:
-                        continue
-                    alert = self.base(p, title=rule['name'], severity=rule['severity'], status='open',
-                                      rule_id=rule['id'], rule_version=rule['version'],
-                                      event_seq=row['seq'], asset_id=event['asset_id'],
-                                      explanation={'field': rule['field'], 'operator': rule['operator'],
-                                                   'expected': rule['value'], 'observed': event['attributes'].get(rule['field'])})
-                    self.put(db, p, 'alerts', alert, 'alert.created')
-                    db.execute('INSERT INTO detections VALUES(?,?,?,?,?)',
-                               (p['tenant'], rule['id'], rule['version'], row['seq'], alert['id']))
-                db.execute('UPDATE events SET processed=1 WHERE seq=?', (row['seq'],))
-                count += 1
-        return count
+                db.execute('SAVEPOINT detection')
+                try:
+                    self.detect_event(db, row)
+                except sqlite3.Error:
+                    # Storage failures are not poison telemetry: propagate, keep the item pending.
+                    raise
+                except Exception:
+                    db.execute('ROLLBACK TO detection')
+                    db.execute('RELEASE detection')
+                    attempts = row['attempts']+1
+                    state = 'dead' if attempts >= 3 else 'retry'
+                    db.execute('UPDATE events SET work_state=?,attempts=?,next_attempt=?,error_code=?, '
+                               'work_revision=work_revision+1 WHERE seq=?',
+                               (state, attempts, now+min(60, 2**(attempts-1)), 'detection_error', seq))
+                    db.execute('INSERT INTO worker_progress(tenant,last_attempt,last_error_code) VALUES(?,?,?) '
+                               'ON CONFLICT(tenant) DO UPDATE SET last_attempt=excluded.last_attempt,'
+                               'last_error_code=excluded.last_error_code', (p['tenant'], now, 'detection_error'))
+                    self.audit(db, p, 'telemetry.'+state, str(seq), {'attempts': attempts, 'error_code': 'detection_error'})
+                else:
+                    db.execute('RELEASE detection')
+                    db.execute("UPDATE events SET processed=1,work_state='done',error_code=NULL,"
+                               'attempts=attempts+1,work_revision=work_revision+1 WHERE seq=?', (seq,))
+                    db.execute('INSERT INTO worker_progress VALUES(?,?,?,NULL) ON CONFLICT(tenant) DO UPDATE SET '
+                               'last_attempt=excluded.last_attempt,last_success=excluded.last_success,last_error_code=NULL',
+                               (p['tenant'], now, now))
+                    completed += 1
+        return completed
 
     def search(self, p, body):
         self.authorize(p, 'read')

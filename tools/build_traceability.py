@@ -7,12 +7,18 @@ PARTIAL = {
  'IAM-004':['test_asset_group_and_sensitivity_filter','test_assigned_only_cases_and_related_objects'], 'IAM-006':['test_approval_quorum_and_no_execution','test_self_approval_even_if_role_elevated'],
  'IAM-009':['test_revocation_immediate','test_rotation_invalidates_all_target_cookies_and_old_bearer'],
  'IAM-010':['test_sessions_list_hides_secrets','test_revoke_one_session_keeps_other'],
- 'OPS-009':['test_v1_upgrade_preserves_data_and_keys_closes_sessions','test_future_schema_fails_closed'], 'IAM-011':['test_cross_tenant_transition','test_10000_scoped_reads'],
+ 'OPS-009':['test_v1_upgrade_preserves_data_and_keys_closes_sessions','test_future_schema_fails_closed','test_v2_to_v3_preserves_live_sessions_and_event_state'], 'IAM-011':['test_cross_tenant_transition','test_10000_scoped_reads'],
  'IAM-012':['test_role_denial_audited'], 'TEN-001':['test_tenant_from_server_only'],
  'TEN-002':['test_10000_scoped_reads','test_search_cursor_and_filter'], 'TEN-012':['test_10000_scoped_reads'],
  'AST-001':['test_durable_ack_restart_and_dedup'], 'AST-006':['test_http_create_and_tenant_spoof'],
  'ING-002':['test_bad_event_time_and_oversize'], 'ING-004':['test_concurrent_dedup','test_idempotency_conflict_rolls_back_batch'],
- 'ING-005':['test_durable_ack_restart_and_dedup'], 'ING-011':['test_bad_event_time_and_oversize'],
+ 'ING-003':['test_registered_source_binds_collector_and_assets','test_admin_cannot_spoof_registered_collector'],
+ 'ING-005':['test_durable_ack_restart_and_dedup'],
+ 'ING-006':['test_backpressure_relieved_after_processing'],
+ 'ING-009':['test_three_attempts_dead_letter_and_redacted_metadata','test_manual_retry_does_not_duplicate_logical_effects'],
+ 'ING-013':['test_health_routes_and_error_contract'],
+ 'ING-014':['test_poison_event_does_not_rollback_healthy_event'],
+ 'TEN-005':['test_quota_concurrency_cannot_oversubscribe','test_one_tenant_quota_does_not_block_another'], 'ING-011':['test_bad_event_time_and_oversize'],
  'ING-015':['test_search_cursor_and_filter'], 'STO-009':['test_tampered_payload_and_metadata'],
  'DET-001':['test_no_self_publish','test_rule_immutable_published'], 'DET-002':['test_rule_validation'],
  'DET-005':['test_draft_does_not_alert_and_replay_is_deterministic'],
@@ -39,11 +45,11 @@ def build():
             identifier=item['id']
             records.append({'id':identifier,'status':'partial_lab' if identifier in PARTIAL else 'not_implemented',
                             'tests':PARTIAL.get(identifier,[]), 'accepted':False})
-    output={'release':'0.2.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
+    output={'release':'0.3.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
             'formal_acceptance':{'passed':0,'total':len(source['acceptance_tests']),
                                  'e2e_passed':0,'e2e_total':len(source['omega_e2e'])}}
     Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')
-    lines=['# Матрица реализации 0.2.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
+    lines=['# Матрица реализации 0.3.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
            '`not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.','',
            '| Требование | Состояние | Локальные тесты |','|---|---|---|']
     for r in records:
