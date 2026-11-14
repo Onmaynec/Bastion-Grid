@@ -1,0 +1,3820 @@
+{
+  "release": "0.1.0",
+  "scope": "local-lab",
+  "full_rfp_accepted": false,
+  "requirements": [
+    {
+      "id": "IAM-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IAM-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_revocation_invalidates_cookie",
+        "test_logout_invalidates_session"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "IAM-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IAM-004",
+      "status": "partial_lab",
+      "tests": [
+        "test_role_denial_audited"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "IAM-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IAM-006",
+      "status": "partial_lab",
+      "tests": [
+        "test_approval_quorum_and_no_execution",
+        "test_self_approval_even_if_role_elevated"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "IAM-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IAM-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IAM-009",
+      "status": "partial_lab",
+      "tests": [
+        "test_revocation_immediate"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "IAM-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IAM-011",
+      "status": "partial_lab",
+      "tests": [
+        "test_cross_tenant_transition",
+        "test_10000_scoped_reads"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "IAM-012",
+      "status": "partial_lab",
+      "tests": [
+        "test_role_denial_audited"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "TEN-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_tenant_from_server_only"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "TEN-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_10000_scoped_reads",
+        "test_search_cursor_and_filter"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "TEN-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TEN-012",
+      "status": "partial_lab",
+      "tests": [
+        "test_10000_scoped_reads"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "AST-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_durable_ack_restart_and_dedup"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "AST-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-006",
+      "status": "partial_lab",
+      "tests": [
+        "test_http_create_and_tenant_spoof"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "AST-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "AST-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "WIN-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "LNX-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_bad_event_time_and_oversize"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "ING-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-004",
+      "status": "partial_lab",
+      "tests": [
+        "test_concurrent_dedup",
+        "test_idempotency_conflict_rolls_back_batch"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "ING-005",
+      "status": "partial_lab",
+      "tests": [
+        "test_durable_ack_restart_and_dedup"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "ING-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-011",
+      "status": "partial_lab",
+      "tests": [
+        "test_bad_event_time_and_oversize"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "ING-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-015",
+      "status": "partial_lab",
+      "tests": [
+        "test_search_cursor_and_filter"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "ING-016",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-017",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ING-018",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-009",
+      "status": "partial_lab",
+      "tests": [
+        "test_tampered_payload_and_metadata"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "STO-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "STO-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_no_self_publish",
+        "test_rule_immutable_published"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "DET-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_rule_validation"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "DET-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-005",
+      "status": "partial_lab",
+      "tests": [
+        "test_draft_does_not_alert_and_replay_is_deterministic"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "DET-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-010",
+      "status": "partial_lab",
+      "tests": [
+        "test_detection_restart_exact_logical_effect"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "DET-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-015",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DET-016",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_case_idempotency"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INC-003",
+      "status": "partial_lab",
+      "tests": [
+        "test_state_machine_version_and_reason"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INC-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-005",
+      "status": "partial_lab",
+      "tests": [
+        "test_state_machine_version_and_reason"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INC-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-007",
+      "status": "partial_lab",
+      "tests": [
+        "test_evidence_export_and_offline_verifier"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INC-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INC-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_no_arbitrary_command"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "RSP-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-003",
+      "status": "partial_lab",
+      "tests": [
+        "test_approval_quorum_and_no_execution"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "RSP-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-005",
+      "status": "partial_lab",
+      "tests": [
+        "test_expired_approval"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "RSP-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-010",
+      "status": "partial_lab",
+      "tests": [
+        "test_approval_quorum_and_no_execution"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "RSP-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "RSP-015",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "VUL-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_contract_routes"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INT-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-005",
+      "status": "partial_lab",
+      "tests": [
+        "test_search_cursor_and_filter"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INT-006",
+      "status": "partial_lab",
+      "tests": [
+        "test_error_contract_and_no_stacktrace"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "INT-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "INT-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UIX-015",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-005",
+      "status": "partial_lab",
+      "tests": [
+        "test_backup_restores_cases_and_evidence"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "OPS-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OPS-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_role_denial_audited"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "GOV-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_audit_tamper_and_truncation"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "GOV-003",
+      "status": "partial_lab",
+      "tests": [
+        "test_evidence_export_and_offline_verifier"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "GOV-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GOV-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKI-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "KMS-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EDX-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MAC-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NDR-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CLD-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "K8S-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "IDT-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "UEB-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "GRF-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "TIX-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "HNT-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ART-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SDX-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DSP-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "ASM-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EAS-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DAT-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "OTI-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SOA-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PLG-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "BIZ-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "FED-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "DRP-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "MLS-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EVD-001",
+      "status": "partial_lab",
+      "tests": [
+        "test_evidence_export_and_offline_verifier"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "EVD-002",
+      "status": "partial_lab",
+      "tests": [
+        "test_tampered_payload_and_metadata"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "EVD-003",
+      "status": "partial_lab",
+      "tests": [
+        "test_audit_tamper_and_truncation"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "EVD-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EVD-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EVD-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EVD-007",
+      "status": "partial_lab",
+      "tests": [
+        "test_evidence_export_and_offline_verifier"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "EVD-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EVD-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "EVD-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "PKA-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "CTL-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SAT-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-003",
+      "status": "partial_lab",
+      "tests": [
+        "test_10000_scoped_reads"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "SCA-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-006",
+      "status": "partial_lab",
+      "tests": [
+        "test_csrf",
+        "test_cookie_security_and_csp"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "SCA-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-008",
+      "status": "partial_lab",
+      "tests": [
+        "test_error_contract_and_no_stacktrace"
+      ],
+      "accepted": false
+    },
+    {
+      "id": "SCA-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "SCA-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-048",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-049",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-050",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-051",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-052",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-053",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-054",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-055",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-056",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-057",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-058",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-059",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-060",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-061",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-062",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-063",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-064",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-065",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-066",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-067",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-068",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-069",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-070",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-071",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-072",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-073",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-074",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-075",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-076",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-077",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-078",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-079",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-080",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-081",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-082",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-083",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-084",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-085",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-086",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-087",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-088",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-089",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-090",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-091",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-092",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-093",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-094",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-095",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-096",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-097",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-098",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-099",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-100",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-101",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-102",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-103",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-104",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-105",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-106",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-107",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-108",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-109",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-110",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-111",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-001",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-002",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-003",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-004",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-005",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-006",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-007",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-008",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-009",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-010",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-011",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-012",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-013",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-014",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-015",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-016",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-017",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-018",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-019",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-020",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-021",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-022",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-023",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-024",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-025",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-026",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-027",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-028",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-029",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-030",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-031",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-032",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-033",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-034",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-035",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-036",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-037",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-038",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-039",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-040",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-041",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-042",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-043",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-044",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-045",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-046",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    },
+    {
+      "id": "NFR-047",
+      "status": "not_implemented",
+      "tests": [],
+      "accepted": false
+    }
+  ],
+  "formal_acceptance": {
+    "passed": 0,
+    "total": 192,
+    "e2e_passed": 0,
+    "e2e_total": 16
+  }
+}

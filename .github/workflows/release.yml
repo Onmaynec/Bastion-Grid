@@ -1,0 +1,24 @@
+name: Source release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -v
+      - name: Package tracked sources
+        run: git archive --format=zip --prefix=Bastion-Grid/ -o Bastion-Grid-source.zip HEAD
+      - name: Checksums
+        run: sha256sum Bastion-Grid-source.zip > SHA256SUMS
+      - name: Publish prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" Bastion-Grid-source.zip SHA256SUMS --prerelease --title "BASTION GRID $RELEASE_TAG — Local Lab" --notes-file docs/acceptance/RELEASE_NOTES.md
