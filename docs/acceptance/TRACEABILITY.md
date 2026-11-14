@@ -1,4 +1,4 @@
-# Матрица реализации 0.3.0
+# Матрица реализации 0.4.0
 
 `partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. `not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.
 
@@ -46,11 +46,11 @@
 | WIN-004 | not_implemented |  |
 | WIN-005 | not_implemented |  |
 | WIN-006 | not_implemented |  |
-| WIN-007 | not_implemented |  |
+| WIN-007 | partial_lab | test_collector_queue_cap_preserves_oldest, test_collector_restart_preserves_event_ids |
 | WIN-008 | not_implemented |  |
 | WIN-009 | not_implemented |  |
 | WIN-010 | not_implemented |  |
-| WIN-011 | not_implemented |  |
+| WIN-011 | partial_lab | test_collector_cli_sample_and_status |
 | WIN-012 | not_implemented |  |
 | WIN-013 | not_implemented |  |
 | LNX-001 | not_implemented |  |
@@ -60,7 +60,7 @@
 | LNX-005 | not_implemented |  |
 | LNX-006 | not_implemented |  |
 | LNX-007 | not_implemented |  |
-| LNX-008 | not_implemented |  |
+| LNX-008 | partial_lab | test_collector_byte_cap, test_collector_lost_ack_replays_identical_event |
 | LNX-009 | not_implemented |  |
 | LNX-010 | not_implemented |  |
 | LNX-011 | not_implemented |  |

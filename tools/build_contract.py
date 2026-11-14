@@ -178,7 +178,7 @@ for item in paths.values():
     for operation in item.values():
         operation['responses']['429']['headers']={'Retry-After':{'schema':{'type':'integer'},
             'description':'Рекомендуемый интервал повторного запроса в секундах; это не обещание освобождения квоты.'}}
-contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.3.0',
+contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.4.0',
  'description':'Контракт реализованного лабораторного подмножества. Отличия маршрутов от целевого RFP — ADR-004. Не production API.'},
  'servers':[{'url':'http://127.0.0.1:8080'}], 'paths':paths,
  'components':{'schemas':schemas,'securitySchemes':{'bearerAuth':{'type':'http','scheme':'bearer'},

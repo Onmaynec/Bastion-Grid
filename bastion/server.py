@@ -44,7 +44,7 @@ class Server(ThreadingHTTPServer):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = 'BastionGrid/0.3'
+    server_version = 'BastionGrid/0.4'
 
     def log_message(self, *_):
         pass  # No tokens, payloads, or query strings in access logs.

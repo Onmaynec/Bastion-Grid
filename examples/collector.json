@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:8080",
+  "source_id": "local-endpoint",
+  "asset_id": "REPLACE_WITH_ASSET_UUID",
+  "token_file": "collector-token.txt",
+  "spool": "collector-spool.sqlite3"
+}

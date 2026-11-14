@@ -9,7 +9,8 @@
 | Identity completion | PostgreSQL/RLS, OIDC Code+PKCE, MFA assurance, подписанные политики | IAM/TEN P0 и отрицательные тесты всех ресурсов |
 | 0.3.0 Durable telemetry (local) | Реестр источников, квоты, изоляция ошибок, DLQ/retry, показатели очереди | Локальные регрессии; промышленный ingestion не завершён |
 | Telemetry completion | Gateway, mTLS enrollment, schema registry, внешний broker | ACK/replay/poison/fairness с реальными инфраструктурными отказами |
-| 0.4.0 Endpoint baseline | Видимые Windows/Linux службы, native telemetry, bounded encrypted spool, signed update | Совместимость ОС и 24-часовые ресурсные прогоны |
+| 0.4.0 Local Collector | Foreground heartbeat, SQLite spool, ACK/retry, локальные счётчики и CLI | Локальные регрессии Windows/Linux; endpoint baseline не завершён |
+| Endpoint completion | Windows/Linux службы, Event Log/ETW/auditd, encrypted spool, signed update | Совместимость ОС и 24-часовые ресурсные прогоны |
 | 0.5.0 Analytics | ClickHouse/search, temporal rules, watermark, rule fixtures, replay jobs | Детерминизм, quality suite и R1 search benchmark |
 | 0.6.0 Evidence и response | PKI/KMS, immutable vault, signatures, agent receipts, bounded reversible actions | Quorum/MFA, TTL, rollback и offline verifier с trust anchor |
 | 0.7.0 Posture | SBOM/vulnerabilities, CMDB, webhooks, risk and remediation | Import idempotency и provenance |

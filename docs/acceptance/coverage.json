@@ -1,5 +1,5 @@
 {
-  "release": "0.3.0",
+  "release": "0.4.0",
   "scope": "local-lab",
   "full_rfp_accepted": false,
   "requirements": [
@@ -291,8 +291,11 @@
     },
     {
       "id": "WIN-007",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_collector_queue_cap_preserves_oldest",
+        "test_collector_restart_preserves_event_ids"
+      ],
       "accepted": false
     },
     {
@@ -315,8 +318,10 @@
     },
     {
       "id": "WIN-011",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_collector_cli_sample_and_status"
+      ],
       "accepted": false
     },
     {
@@ -375,8 +380,11 @@
     },
     {
       "id": "LNX-008",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_collector_byte_cap",
+        "test_collector_lost_ack_replays_identical_event"
+      ],
       "accepted": false
     },
     {
