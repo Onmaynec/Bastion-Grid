@@ -59,6 +59,21 @@ schemas = {
                 'properties':{'subject':S,'role':S,'tenant':S,'csrf':{'type':['string','null']},'profile':S}},
     'Logout': obj({'logged_out':{'const':True}}, ['logged_out']),
 }
+schemas['Predicate'] = obj({'field':enum('event_type','outcome','process_name','severity'),
+    'operator':enum('eq','gte','contains'),'value':{'type':['string','number']}}, ['field','operator','value'])
+schemas['RuleInput']['required'] = ['name']
+schemas['RuleInput']['properties'].update({'conditions':{'type':'array','minItems':1,'maxItems':8,'items':ref('Predicate')},'match':enum('all','any')})
+schemas['RuleInput']['oneOf'] = [
+    {'required':['field','operator','value'],'not':{'anyOf':[{'required':['conditions']},{'required':['match']}]}},
+    {'required':['conditions'],'not':{'anyOf':[{'required':['field']},{'required':['operator']},{'required':['value']}]}}]
+schemas['Search']['properties'].update({k:S for k in ['source_id','asset_id','outcome']})
+schemas['Search']['properties'].update({k:{'type':'string','format':'date-time'} for k in ['time_from','time_to']})
+schemas['RuleFixtures'] = obj({'fixtures':{'type':'array','minItems':1,'maxItems':100,
+    'items':obj({'attributes':{'type':'object','maxProperties':32},'expected':{'type':'boolean'}}, ['attributes','expected'])}}, ['fixtures'])
+schemas['FixtureResult'] = obj({'rule_id':S,'rule_version':I,'dry_run':{'const':True},'passed':I,'total':I,
+    'results':{'type':'array','items':obj({'index':I,'matched':{'type':'boolean'},'expected':{'type':'boolean'},
+        'passed':{'type':'boolean'},'conditions':{'type':'array','items':{'type':'boolean'}}},
+        ['index','matched','expected','passed','conditions'])}}, ['rule_id','rule_version','dry_run','passed','total','results'])
 schemas.update({
     'AccessPolicy': obj({'groups': {'type':'array','minItems':1,'maxItems':50,'uniqueItems':True,
                                    'items':{'type':'string','minLength':1,'maxLength':100}},
@@ -147,6 +162,7 @@ for path,request in [('assets','AssetInput'),('rules','RuleInput'),('cases','Cas
 endpoint('events/ingest','post','Durable ACK локального хранилища','Batch','Ack')
 endpoint('events/search','post','Курсор по порядку приёма','Search','SearchResult')
 endpoint('rules/{id}/publish','post','Независимая публикация','Empty',version=True)
+endpoint('rules/{id}/test','post','Проверка 1–100 примеров без записи алертов','RuleFixtures','FixtureResult')
 endpoint('rules/{id}/replay','post','Replay до 10 000 событий без алертов','Empty','Replay')
 endpoint('cases/{id}/status','patch','Переход состояния кейса','Transition',version=True)
 endpoint('responses/{id}/approvals','post','Независимый голос согласования','Empty',version=True)
@@ -178,7 +194,7 @@ for item in paths.values():
     for operation in item.values():
         operation['responses']['429']['headers']={'Retry-After':{'schema':{'type':'integer'},
             'description':'Рекомендуемый интервал повторного запроса в секундах; это не обещание освобождения квоты.'}}
-contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.4.0',
+contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.5.0',
  'description':'Контракт реализованного лабораторного подмножества. Отличия маршрутов от целевого RFP — ADR-004. Не production API.'},
  'servers':[{'url':'http://127.0.0.1:8080'}], 'paths':paths,
  'components':{'schemas':schemas,'securitySchemes':{'bearerAuth':{'type':'http','scheme':'bearer'},

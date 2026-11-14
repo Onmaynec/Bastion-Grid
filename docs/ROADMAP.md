@@ -11,7 +11,8 @@
 | Telemetry completion | Gateway, mTLS enrollment, schema registry, внешний broker | ACK/replay/poison/fairness с реальными инфраструктурными отказами |
 | 0.4.0 Local Collector | Foreground heartbeat, SQLite spool, ACK/retry, локальные счётчики и CLI | Локальные регрессии Windows/Linux; endpoint baseline не завершён |
 | Endpoint completion | Windows/Linux службы, Event Log/ETW/auditd, encrypted spool, signed update | Совместимость ОС и 24-часовые ресурсные прогоны |
-| 0.5.0 Analytics | ClickHouse/search, temporal rules, watermark, rule fixtures, replay jobs | Детерминизм, quality suite и R1 search benchmark |
+| 0.5.0 Rule Lab and Search | Фильтры, курсор UI, AND/OR, fixtures, snapshot replay | Локальные регрессии; промышленная аналитика не завершена |
+| Analytics completion | ClickHouse/search, temporal rules, watermark, replay jobs | Quality suite и R1 search benchmark |
 | 0.6.0 Evidence и response | PKI/KMS, immutable vault, signatures, agent receipts, bounded reversible actions | Quorum/MFA, TTL, rollback и offline verifier с trust anchor |
 | 0.7.0 Posture | SBOM/vulnerabilities, CMDB, webhooks, risk and remediation | Import idempotency и provenance |
 | OMEGA P4–P8 | Graph/hunting, NDR, cloud/Kubernetes/identity, OT/email/TI, SOAR, UEBA/ML | Изолированные модули, replay, safety и privacy gates |

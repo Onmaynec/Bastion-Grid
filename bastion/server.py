@@ -44,7 +44,7 @@ class Server(ThreadingHTTPServer):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = 'BastionGrid/0.4'
+    server_version = 'BastionGrid/0.5'
 
     def log_message(self, *_):
         pass  # No tokens, payloads, or query strings in access logs.
@@ -220,6 +220,8 @@ class Handler(BaseHTTPRequestHandler):
                 result = s.publish(p, tail[1], self.version())
             elif self.command == 'POST' and len(tail) == 3 and tail[0] == 'rules' and tail[2] == 'replay':
                 result = s.replay(p, tail[1])
+            elif self.command == 'POST' and len(tail) == 3 and tail[0] == 'rules' and tail[2] == 'test':
+                result = s.test_rule(p, tail[1], body)
             elif self.command == 'POST' and tail == ['events', 'ingest']:
                 result = s.ingest(p, body)
             elif self.command == 'POST' and tail == ['events', 'search']:

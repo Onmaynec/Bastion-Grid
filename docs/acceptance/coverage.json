@@ -1,5 +1,5 @@
 {
-  "release": "0.4.0",
+  "release": "0.5.0",
   "scope": "local-lab",
   "full_rfp_accepted": false,
   "requirements": [
@@ -520,7 +520,9 @@
       "id": "ING-015",
       "status": "partial_lab",
       "tests": [
-        "test_search_cursor_and_filter"
+        "test_search_cursor_and_filter",
+        "test_search_half_open_timezone_range",
+        "test_filtered_cursor_has_no_duplicates"
       ],
       "accepted": false
     },
@@ -641,7 +643,8 @@
       "id": "DET-002",
       "status": "partial_lab",
       "tests": [
-        "test_rule_validation"
+        "test_rule_validation",
+        "test_composite_validation"
       ],
       "accepted": false
     },
@@ -661,7 +664,9 @@
       "id": "DET-005",
       "status": "partial_lab",
       "tests": [
-        "test_draft_does_not_alert_and_replay_is_deterministic"
+        "test_draft_does_not_alert_and_replay_is_deterministic",
+        "test_fixtures_no_side_effects_and_failed_expectation",
+        "test_composite_live_replay_and_explanation"
       ],
       "accepted": false
     },

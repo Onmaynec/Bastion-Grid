@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "BASTION GRID local lab API",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "Контракт реализованного лабораторного подмножества. Отличия маршрутов от целевого RFP — ADR-004. Не production API."
   },
   "servers": [
@@ -2367,6 +2367,183 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/Empty"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/rules/{id}/test": {
+      "post": {
+        "operationId": "post_rules_id_test",
+        "summary": "Проверка 1–100 примеров без записи алертов",
+        "responses": {
+          "200": {
+            "description": "Операция завершена",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FixtureResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Неверный запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Нет действующей сессии",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Доступ запрещён",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Объект не найден",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Конфликт",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Слишком большой запрос",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Неверный Content-Type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Нарушение политики",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Нет If-Match",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Рекомендуемый интервал повторного запроса в секундах; это не обещание освобождения квоты."
+              }
+            }
+          },
+          "503": {
+            "description": "Сервис недоступен",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "sessionCookie": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "description": "Обязателен при cookie session. Bearer принимается только без Origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RuleFixtures"
               }
             }
           }
@@ -6137,13 +6314,72 @@
           "technique": {
             "type": "string",
             "maxLength": 40
+          },
+          "conditions": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 8,
+            "items": {
+              "$ref": "#/components/schemas/Predicate"
+            }
+          },
+          "match": {
+            "type": "string",
+            "enum": [
+              "all",
+              "any"
+            ]
           }
         },
         "required": [
-          "name",
-          "field",
-          "operator",
-          "value"
+          "name"
+        ],
+        "oneOf": [
+          {
+            "required": [
+              "field",
+              "operator",
+              "value"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "conditions"
+                  ]
+                },
+                {
+                  "required": [
+                    "match"
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "required": [
+              "conditions"
+            ],
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "field"
+                  ]
+                },
+                {
+                  "required": [
+                    "operator"
+                  ]
+                },
+                {
+                  "required": [
+                    "value"
+                  ]
+                }
+              ]
+            }
+          }
         ]
       },
       "Event": {
@@ -6222,6 +6458,29 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 200
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "asset_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "time_from": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "time_to": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "required": []
@@ -6603,6 +6862,136 @@
         },
         "required": [
           "logged_out"
+        ]
+      },
+      "Predicate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "event_type",
+              "outcome",
+              "process_name",
+              "severity"
+            ]
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "eq",
+              "gte",
+              "contains"
+            ]
+          },
+          "value": {
+            "type": [
+              "string",
+              "number"
+            ]
+          }
+        },
+        "required": [
+          "field",
+          "operator",
+          "value"
+        ]
+      },
+      "RuleFixtures": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fixtures": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "attributes": {
+                  "type": "object",
+                  "maxProperties": 32
+                },
+                "expected": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "attributes",
+                "expected"
+              ]
+            }
+          }
+        },
+        "required": [
+          "fixtures"
+        ]
+      },
+      "FixtureResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "rule_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "rule_version": {
+            "type": "integer"
+          },
+          "dry_run": {
+            "const": true
+          },
+          "passed": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "index": {
+                  "type": "integer"
+                },
+                "matched": {
+                  "type": "boolean"
+                },
+                "expected": {
+                  "type": "boolean"
+                },
+                "passed": {
+                  "type": "boolean"
+                },
+                "conditions": {
+                  "type": "array",
+                  "items": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "required": [
+                "index",
+                "matched",
+                "expected",
+                "passed",
+                "conditions"
+              ]
+            }
+          }
+        },
+        "required": [
+          "rule_id",
+          "rule_version",
+          "dry_run",
+          "passed",
+          "total",
+          "results"
         ]
       },
       "AccessPolicy": {

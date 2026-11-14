@@ -234,22 +234,23 @@ class Store:
 
     def rule(self, p, body):
         self.authorize(p, 'rule')
-        exact_fields(body, ['name', 'field', 'operator', 'value', 'severity', 'technique'],
-                     ['name', 'field', 'operator', 'value'])
+        from .analytics import predicate
+        exact_fields(body, ['name', 'field', 'operator', 'value', 'severity', 'technique', 'conditions', 'match'], ['name'])
         name = text_field(body, 'name')
-        require(body['field'] in {'event_type', 'outcome', 'process_name', 'severity'})
-        require(body['operator'] in {'eq', 'gte', 'contains'})
-        value = body['value']
-        require(type(value) in (str, int, float) and len(str(value)) <= 200)
-        if body['operator'] == 'gte':
-            require(type(value) in (int, float))
-        if body['operator'] == 'contains':
-            require(isinstance(value, str) and bool(value))
+        if 'conditions' in body:
+            require(not any(k in body for k in ('field', 'operator', 'value')))
+            require(isinstance(body['conditions'], list) and 1 <= len(body['conditions']) <= 8)
+            require(body.get('match', 'all') in ('all', 'any'))
+            definition = {'conditions': [predicate(c) for c in body['conditions']], 'match': body.get('match', 'all')}
+        else:
+            require('match' not in body)
+            require(all(k in body for k in ('field', 'operator', 'value')))
+            definition = predicate({k: body[k] for k in ('field', 'operator', 'value')})
         severity = body.get('severity', 'medium')
         require(severity in {'low', 'medium', 'high', 'critical'})
         if 'technique' in body:
             text_field(body, 'technique', 40)
-        rule = self.base(p, name=name, field=body['field'], operator=body['operator'], value=value,
+        rule = self.base(p, name=name, **definition,
                          severity=severity, technique=body.get('technique', ''), status='draft')
         with self.tx() as db:
             self.live_principal(db, p)
@@ -257,13 +258,28 @@ class Store:
 
     @staticmethod
     def matches(rule, event):
-        value = event['attributes'].get(rule['field'])
-        expected = rule['value']
-        if rule['operator'] == 'eq':
-            return type(value) is type(expected) and value == expected
-        if rule['operator'] == 'gte':
-            return type(value) in (int, float) and value >= expected
-        return isinstance(value, str) and expected in value
+        from .analytics import evaluate
+        return evaluate(rule, event)['matched']
+
+    def test_rule(self, p, object_id, body):
+        from .analytics import evaluate
+        self.authorize(p, 'read')
+        exact_fields(body, ['fixtures'], ['fixtures'])
+        fixtures = body['fixtures']
+        require(isinstance(fixtures, list) and 1 <= len(fixtures) <= 100)
+        require(len(canonical(body).encode()) <= 65536, 'payload_size', 'Лимит fixtures — 64 КиБ', 413)
+        with self.connect() as db:
+            rule = self.get(db, p, 'rules', object_id)
+        results = []
+        for i, fixture in enumerate(fixtures):
+            exact_fields(fixture, ['attributes', 'expected'], ['attributes', 'expected'])
+            require(isinstance(fixture['attributes'], dict) and len(fixture['attributes']) <= 32)
+            require(type(fixture['expected']) is bool)
+            result = evaluate(rule, fixture)
+            results.append({'index': i, **result, 'expected': fixture['expected'],
+                            'passed': result['matched'] == fixture['expected']})
+        return {'rule_id': object_id, 'rule_version': rule['version'], 'dry_run': True,
+                'passed': sum(r['passed'] for r in results), 'total': len(results), 'results': results}
 
     def publish(self, p, object_id, version):
         self.authorize(p, 'publish')
@@ -279,6 +295,7 @@ class Store:
     def replay(self, p, object_id):
         self.authorize(p, 'read')
         with self.connect() as db:
+            db.execute('BEGIN')
             rule = self.get(db, p, 'rules', object_id)
             rows = db.execute('SELECT seq,body FROM events WHERE tenant=? ORDER BY seq LIMIT 10001',
                               (p['tenant'],)).fetchall()
@@ -351,11 +368,16 @@ class Store:
                                 (p['tenant'], rule['id'], rule['version'], row['seq'])).fetchone()
             if exists:
                 continue
+            if 'conditions' in rule:
+                from .analytics import evaluate
+                explanation = {'match': rule['match'], 'conditions': rule['conditions'],
+                               'results': evaluate(rule, event)['conditions']}
+            else:
+                explanation = {'field': rule['field'], 'operator': rule['operator'],
+                               'expected': rule['value'], 'observed': event['attributes'].get(rule['field'])}
             alert = self.base(p, title=rule['name'], severity=rule['severity'], status='open',
-                              rule_id=rule['id'], rule_version=rule['version'],
-                              event_seq=row['seq'], asset_id=event['asset_id'],
-                              explanation={'field': rule['field'], 'operator': rule['operator'],
-                                           'expected': rule['value'], 'observed': event['attributes'].get(rule['field'])})
+                              rule_id=rule['id'], rule_version=rule['version'], event_seq=row['seq'],
+                              asset_id=event['asset_id'], explanation=explanation)
             self.put(db, p, 'alerts', alert, 'alert.created')
             db.execute('INSERT INTO detections VALUES(?,?,?,?,?)',
                        (p['tenant'], rule['id'], rule['version'], row['seq'], alert['id']))
@@ -407,17 +429,28 @@ class Store:
 
     def search(self, p, body):
         self.authorize(p, 'read')
-        exact_fields(body, ['limit', 'after', 'event_type'])
+        exact_fields(body, ['limit', 'after', 'event_type', 'source_id', 'asset_id', 'outcome', 'time_from', 'time_to'])
         limit = body.get('limit', 50)
         after = body.get('after', 0)
         require(type(limit) is int and 1 <= limit <= 100)
         require(type(after) is int and after >= 0)
         query = 'SELECT seq,body FROM events WHERE tenant=? AND seq>?'
         params = [p['tenant'], after]
-        if 'event_type' in body:
-            text_field(body, 'event_type')
-            query += " AND json_extract(body,'$.attributes.event_type')=?"
-            params.append(body['event_type'])
+        for key, column in [('event_type', "json_extract(body,'$.attributes.event_type')"),
+                            ('outcome', "json_extract(body,'$.attributes.outcome')"),
+                            ('source_id', 'source_id'), ('asset_id', "json_extract(body,'$.asset_id')")]:
+            if key in body:
+                text_field(body, key)
+                query += f' AND {column}=?'
+                params.append(body[key])
+        from .analytics import timestamp
+        bounds = {k: timestamp(body[k]) for k in ('time_from', 'time_to') if k in body}
+        require(not ('time_from' in bounds and 'time_to' in bounds) or bounds['time_from'] < bounds['time_to'],
+                'invalid_time', 'Начало диапазона должно быть раньше конца')
+        for key, op in [('time_from', '>='), ('time_to', '<')]:
+            if key in bounds:
+                query += f' AND event_time{op}?'
+                params.append(bounds[key])
         with self.connect() as db:
             rows = []
             for row in db.execute(query+' ORDER BY seq', params):

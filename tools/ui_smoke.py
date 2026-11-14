@@ -99,6 +99,43 @@ def main():
                 page.locator('#modal').wait_for(state='hidden')
                 page.get_by_role('cell', name='<img src=x onerror=alert(1)>', exact=True).wait_for()
                 assert page.locator('#content img').count() == 0
+                # Exercise filters and cursor pagination through the real UI.
+                server.store.ingest(principal, {'events': [{'event_id':f'page-{i}', 'source_id':'ui-pages',
+                    'asset_id':asset['id'], 'event_time':'2026-11-14T08:00:00Z', 'schema_version':1,
+                    'attributes':{'event_type':'ui-pagination'}} for i in range(55)]})
+                page.locator('[data-page="events"]').click()
+                page.locator('[data-action="filter-events"]').click()
+                page.locator('#f-event_type').fill('ui-pagination')
+                page.locator('#f-source_id').fill('ui-pages')
+                page.locator('#f-time_from').fill('2026-11-14T08:00:00Z')
+                page.locator('#f-time_to').fill('2026-11-14T08:01:00Z')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.locator('[data-action="more-events"]').wait_for()
+                assert page.locator('#content tbody tr').count()==50
+                page.locator('[data-action="more-events"]').click()
+                page.locator('[data-action="more-events"]').wait_for(state='hidden')
+                assert page.locator('#content tbody tr').count()==55
+                page.screenshot(path=str(output/'search.png'), full_page=True)
+                page.locator('[data-page="rules"]').click()
+                page.locator('[data-action="new-rule"]').click()
+                page.locator('#f-name').fill('UI composite')
+                page.locator('#f-field').select_option('outcome')
+                page.locator('#f-value').fill('failure')
+                page.locator('#f-field2').select_option('severity')
+                page.locator('#f-operator2').select_option('gte')
+                page.locator('#f-value2').fill('4')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                row=page.get_by_role('row').filter(has=page.get_by_role('cell',name='UI composite',exact=True))
+                row.get_by_role('button',name='Проверить',exact=True).click()
+                page.locator('#f-fixtures').fill(json.dumps([
+                    {'attributes':{'outcome':'failure','severity':4},'expected':True},
+                    {'attributes':{'outcome':'success','severity':4},'expected':False}]))
+                page.locator('#submit-modal').click()
+                page.get_by_text('Проверка: 2 из 2',exact=True).wait_for()
+                page.screenshot(path=str(output/'rule-lab.png'), full_page=True)
+                page.locator('#close-modal').click()
                 page.locator('[data-page="identities"]').click()
                 page.locator('[data-action="new-identity"]').click()
                 page.locator('#f-subject').fill('ui-reader')
@@ -140,7 +177,7 @@ def main():
                 page.locator('#login').wait_for(state='visible')
                 assert not errors, errors
                 browser.close()
-                print('UI: 11 sections, source binding/pause/resume, quotas, DLQ retry, access, XSS, 390px — PASS')
+                print('UI: 11 sections, source binding/pause/resume, quotas, DLQ retry, filtered cursor, composite fixtures, access, XSS, 390px — PASS')
         finally:
             server.shutdown()
             thread.join()

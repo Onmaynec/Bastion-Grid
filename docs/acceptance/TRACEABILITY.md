@@ -1,4 +1,4 @@
-# Матрица реализации 0.4.0
+# Матрица реализации 0.5.0
 
 `partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. `not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.
 
@@ -79,7 +79,7 @@
 | ING-012 | not_implemented |  |
 | ING-013 | partial_lab | test_health_routes_and_error_contract |
 | ING-014 | partial_lab | test_poison_event_does_not_rollback_healthy_event |
-| ING-015 | partial_lab | test_search_cursor_and_filter |
+| ING-015 | partial_lab | test_search_cursor_and_filter, test_search_half_open_timezone_range, test_filtered_cursor_has_no_duplicates |
 | ING-016 | not_implemented |  |
 | ING-017 | not_implemented |  |
 | ING-018 | not_implemented |  |
@@ -98,10 +98,10 @@
 | STO-013 | not_implemented |  |
 | STO-014 | not_implemented |  |
 | DET-001 | partial_lab | test_no_self_publish, test_rule_immutable_published |
-| DET-002 | partial_lab | test_rule_validation |
+| DET-002 | partial_lab | test_rule_validation, test_composite_validation |
 | DET-003 | not_implemented |  |
 | DET-004 | not_implemented |  |
-| DET-005 | partial_lab | test_draft_does_not_alert_and_replay_is_deterministic |
+| DET-005 | partial_lab | test_draft_does_not_alert_and_replay_is_deterministic, test_fixtures_no_side_effects_and_failed_expectation, test_composite_live_replay_and_explanation |
 | DET-006 | not_implemented |  |
 | DET-007 | not_implemented |  |
 | DET-008 | not_implemented |  |

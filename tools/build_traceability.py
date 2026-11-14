@@ -22,9 +22,9 @@ PARTIAL = {
  'ING-013':['test_health_routes_and_error_contract'],
  'ING-014':['test_poison_event_does_not_rollback_healthy_event'],
  'TEN-005':['test_quota_concurrency_cannot_oversubscribe','test_one_tenant_quota_does_not_block_another'], 'ING-011':['test_bad_event_time_and_oversize'],
- 'ING-015':['test_search_cursor_and_filter'], 'STO-009':['test_tampered_payload_and_metadata'],
- 'DET-001':['test_no_self_publish','test_rule_immutable_published'], 'DET-002':['test_rule_validation'],
- 'DET-005':['test_draft_does_not_alert_and_replay_is_deterministic'],
+ 'ING-015':['test_search_cursor_and_filter','test_search_half_open_timezone_range','test_filtered_cursor_has_no_duplicates'], 'STO-009':['test_tampered_payload_and_metadata'],
+ 'DET-001':['test_no_self_publish','test_rule_immutable_published'], 'DET-002':['test_rule_validation','test_composite_validation'],
+ 'DET-005':['test_draft_does_not_alert_and_replay_is_deterministic','test_fixtures_no_side_effects_and_failed_expectation','test_composite_live_replay_and_explanation'],
  'DET-010':['test_detection_restart_exact_logical_effect'],
  'INC-002':['test_case_idempotency'], 'INC-003':['test_state_machine_version_and_reason'],
  'INC-005':['test_state_machine_version_and_reason'], 'INC-007':['test_evidence_export_and_offline_verifier'],
@@ -48,11 +48,11 @@ def build():
             identifier=item['id']
             records.append({'id':identifier,'status':'partial_lab' if identifier in PARTIAL else 'not_implemented',
                             'tests':PARTIAL.get(identifier,[]), 'accepted':False})
-    output={'release':'0.4.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
+    output={'release':'0.5.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
             'formal_acceptance':{'passed':0,'total':len(source['acceptance_tests']),
                                  'e2e_passed':0,'e2e_total':len(source['omega_e2e'])}}
     Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')
-    lines=['# Матрица реализации 0.4.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
+    lines=['# Матрица реализации 0.5.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
            '`not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.','',
            '| Требование | Состояние | Локальные тесты |','|---|---|---|']
     for r in records:
