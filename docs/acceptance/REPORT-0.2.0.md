@@ -13,3 +13,9 @@
 PostgreSQL RLS, OIDC/PKCE, MFA, подписанные policy digests, региональный ABAC и полная независимая приёмка. Группы и чувствительность — application-level атрибуты текущего актива, а не классификатор содержимого событий. Полный аудит тенанта и управление глобальными правилами недоступны scoped identities: это запрет, а не реализация отредактированного audit export.
 
 Формальные AT: 0 из 192; OMEGA E2E: 0 из 16. Локальное расширение IAM не завершает M1.
+
+## Подтверждённый результат CI
+
+[Tests #43564504879](https://github.com/Onmaynec/Bastion-Grid/actions/runs/43564504879), commit `46ab48d`: Windows — 68 тестов пройдены, Linux — 68 тестов пройдены, Chromium — расширенный сценарий пройден. Скриншоты overview/access/mobile из артефакта `soc-ui-check` просмотрены; ширина 390 px проверена без горизонтального переполнения всей страницы.
+
+[Source release #43564572080](https://github.com/Onmaynec/Bastion-Grid/actions/runs/43564572080) завершён успешно. [v0.2.0](https://github.com/Onmaynec/Bastion-Grid/releases/tag/v0.2.0) содержит `Bastion-Grid-source.zip` и `SHA256SUMS`. Архив собран из проверенного commit; релиз помечен prerelease.
