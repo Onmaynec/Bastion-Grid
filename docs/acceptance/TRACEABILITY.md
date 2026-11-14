@@ -1,4 +1,4 @@
-# Матрица реализации 0.5.0
+# Матрица реализации 0.6.0
 
 `partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. `not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.
 
@@ -131,7 +131,7 @@
 | RSP-002 | not_implemented |  |
 | RSP-003 | partial_lab | test_approval_quorum_and_no_execution |
 | RSP-004 | not_implemented |  |
-| RSP-005 | partial_lab | test_expired_approval |
+| RSP-005 | partial_lab | test_expired_approval, test_expiry_persists_once_and_preserves_terminal, test_approval_cancel_race_version |
 | RSP-006 | not_implemented |  |
 | RSP-007 | not_implemented |  |
 | RSP-008 | not_implemented |  |
@@ -463,7 +463,7 @@
 | MLS-009 | not_implemented |  |
 | MLS-010 | not_implemented |  |
 | EVD-001 | partial_lab | test_evidence_export_and_offline_verifier |
-| EVD-002 | partial_lab | test_tampered_payload_and_metadata |
+| EVD-002 | partial_lab | test_tampered_payload_and_metadata, test_verifier_bad_base64_and_size, test_verifier_sequence_and_duplicate_evidence |
 | EVD-003 | partial_lab | test_audit_tamper_and_truncation |
 | EVD-004 | not_implemented |  |
 | EVD-005 | not_implemented |  |

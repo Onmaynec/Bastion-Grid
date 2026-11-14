@@ -5,7 +5,7 @@ import os
 import sqlite3
 from pathlib import Path
 
-from .core import Store, verify
+from .core import Store, verify, Problem
 
 
 def main():
@@ -28,7 +28,12 @@ def main():
     args = parser.parse_args()
     os.umask(0o077)
     if args.command == 'verify':
-        print(json.dumps(verify(json.loads(Path(args.bundle).read_text(encoding='utf-8')), args.checkpoint), indent=2))
+        try:
+            result = verify(json.loads(Path(args.bundle).read_text(encoding='utf-8')), args.checkpoint)
+        except (Problem, OSError, ValueError, RecursionError) as error:
+            print(json.dumps({'valid': False, 'error_code': error.code if isinstance(error, Problem) else 'invalid_bundle'}))
+            raise SystemExit(1) from None
+        print(json.dumps(result, indent=2))
         return
     store = Store(args.db)
     if store.migration_backup:

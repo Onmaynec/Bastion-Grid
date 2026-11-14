@@ -1,5 +1,5 @@
 {
-  "release": "0.5.0",
+  "release": "0.6.0",
   "scope": "local-lab",
   "full_rfp_accepted": false,
   "requirements": [
@@ -862,7 +862,9 @@
       "id": "RSP-005",
       "status": "partial_lab",
       "tests": [
-        "test_expired_approval"
+        "test_expired_approval",
+        "test_expiry_persists_once_and_preserves_terminal",
+        "test_approval_cancel_race_version"
       ],
       "accepted": false
     },
@@ -2878,7 +2880,9 @@
       "id": "EVD-002",
       "status": "partial_lab",
       "tests": [
-        "test_tampered_payload_and_metadata"
+        "test_tampered_payload_and_metadata",
+        "test_verifier_bad_base64_and_size",
+        "test_verifier_sequence_and_duplicate_evidence"
       ],
       "accepted": false
     },

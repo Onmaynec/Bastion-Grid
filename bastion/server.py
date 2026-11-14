@@ -33,6 +33,7 @@ class Server(ThreadingHTTPServer):
     def work(self):
         while not self.stop.wait(0.5):
             try:
+                self.store.expire_responses()
                 self.store.process()
             except Exception:
                 log.exception('Detection worker failed; transaction rolled back')
@@ -44,7 +45,7 @@ class Server(ThreadingHTTPServer):
 
 
 class Handler(BaseHTTPRequestHandler):
-    server_version = 'BastionGrid/0.5'
+    server_version = 'BastionGrid/0.6'
 
     def log_message(self, *_):
         pass  # No tokens, payloads, or query strings in access logs.
@@ -222,6 +223,8 @@ class Handler(BaseHTTPRequestHandler):
                 result = s.replay(p, tail[1])
             elif self.command == 'POST' and len(tail) == 3 and tail[0] == 'rules' and tail[2] == 'test':
                 result = s.test_rule(p, tail[1], body)
+            elif self.command == 'POST' and len(tail) == 3 and tail[0] == 'responses' and tail[2] in ('reject', 'cancel'):
+                result = s.finish_response(p, tail[1], tail[2], body, self.version())
             elif self.command == 'POST' and tail == ['events', 'ingest']:
                 result = s.ingest(p, body)
             elif self.command == 'POST' and tail == ['events', 'search']:

@@ -91,6 +91,24 @@ def main():
                 page.locator('#submit-modal').click()
                 page.locator('#modal').wait_for(state='hidden')
                 page.get_by_role('cell', name='UI collector source', exact=True).wait_for()
+                analyst = server.store.authenticate(credentials['analyst']['token'])
+                case = server.store.list(analyst, 'cases')[0]
+                alert = next(a for a in server.store.list(analyst, 'alerts') if a['id']==case['alert_id'])
+                pending = server.store.response(analyst, {'case_id':case['id'], 'asset_id':alert['asset_id'],
+                    'action':'collect_metadata', 'reason':'UI rejection fixture'})
+                page.locator('[data-page="responses"]').click()
+                page.locator('[data-action="reject-response"]').click()
+                page.locator('#f-reason').fill('Недостаточно оснований')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_text('REJECTED',exact=True).wait_for()
+                page.locator('[data-action="cancel-response"]').click()
+                page.locator('#f-reason').fill('Согласованная заявка больше не нужна')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_text('CANCELLED',exact=True).wait_for()
+                assert page.locator('[data-action="approve"]').count()==0
+                page.screenshot(path=str(output/'response-lifecycle.png'), full_page=True)
                 page.locator('[data-page="assets"]').click()
                 page.locator('[data-action="new-asset"]').click()
                 page.locator('#f-hostname').fill('<img src=x onerror=alert(1)>')
@@ -177,7 +195,7 @@ def main():
                 page.locator('#login').wait_for(state='visible')
                 assert not errors, errors
                 browser.close()
-                print('UI: 11 sections, source binding/pause/resume, quotas, DLQ retry, filtered cursor, composite fixtures, access, XSS, 390px — PASS')
+                print('UI: 11 sections, source binding/pause/resume, quotas, DLQ retry, filtered cursor, composite fixtures, response reject/cancel, access, XSS, 390px — PASS')
         finally:
             server.shutdown()
             thread.join()

@@ -29,12 +29,12 @@ PARTIAL = {
  'INC-002':['test_case_idempotency'], 'INC-003':['test_state_machine_version_and_reason'],
  'INC-005':['test_state_machine_version_and_reason'], 'INC-007':['test_evidence_export_and_offline_verifier'],
  'RSP-001':['test_no_arbitrary_command'], 'RSP-003':['test_approval_quorum_and_no_execution'],
- 'RSP-005':['test_expired_approval'], 'RSP-010':['test_approval_quorum_and_no_execution'],
+ 'RSP-005':['test_expired_approval','test_expiry_persists_once_and_preserves_terminal','test_approval_cancel_race_version'], 'RSP-010':['test_approval_quorum_and_no_execution'],
  'INT-001':['test_contract_routes'], 'INT-005':['test_search_cursor_and_filter'],
  'INT-006':['test_error_contract_and_no_stacktrace'], 'OPS-005':['test_backup_restores_cases_and_evidence'],
  'GOV-001':['test_role_denial_audited'], 'GOV-002':['test_audit_tamper_and_truncation'],
  'GOV-003':['test_evidence_export_and_offline_verifier'],
- 'EVD-001':['test_evidence_export_and_offline_verifier'], 'EVD-002':['test_tampered_payload_and_metadata'],
+ 'EVD-001':['test_evidence_export_and_offline_verifier'], 'EVD-002':['test_tampered_payload_and_metadata','test_verifier_bad_base64_and_size','test_verifier_sequence_and_duplicate_evidence'],
  'EVD-003':['test_audit_tamper_and_truncation'], 'EVD-007':['test_evidence_export_and_offline_verifier'],
  'SCA-003':['test_10000_scoped_reads'], 'SCA-006':['test_csrf','test_cookie_security_and_csp'],
  'SCA-008':['test_error_contract_and_no_stacktrace'],
@@ -48,11 +48,11 @@ def build():
             identifier=item['id']
             records.append({'id':identifier,'status':'partial_lab' if identifier in PARTIAL else 'not_implemented',
                             'tests':PARTIAL.get(identifier,[]), 'accepted':False})
-    output={'release':'0.5.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
+    output={'release':'0.6.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
             'formal_acceptance':{'passed':0,'total':len(source['acceptance_tests']),
                                  'e2e_passed':0,'e2e_total':len(source['omega_e2e'])}}
     Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')
-    lines=['# Матрица реализации 0.5.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
+    lines=['# Матрица реализации 0.6.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
            '`not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.','',
            '| Требование | Состояние | Локальные тесты |','|---|---|---|']
     for r in records:

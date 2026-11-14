@@ -13,7 +13,8 @@
 | Endpoint completion | Windows/Linux службы, Event Log/ETW/auditd, encrypted spool, signed update | Совместимость ОС и 24-часовые ресурсные прогоны |
 | 0.5.0 Rule Lab and Search | Фильтры, курсор UI, AND/OR, fixtures, snapshot replay | Локальные регрессии; промышленная аналитика не завершена |
 | Analytics completion | ClickHouse/search, temporal rules, watermark, replay jobs | Quality suite и R1 search benchmark |
-| 0.6.0 Evidence и response | PKI/KMS, immutable vault, signatures, agent receipts, bounded reversible actions | Quorum/MFA, TTL, rollback и offline verifier с trust anchor |
+| 0.6.0 Evidence and Response Lifecycle | Отказ/отмена, сохранение EXPIRED, строгий verifier и линейный поиск custody | Локальные регрессии; исполнение отключено |
+| Evidence/response completion | PKI/KMS, immutable vault, signatures, agent receipts, bounded reversible actions | Quorum/MFA, TTL, rollback и verifier с trust anchor |
 | 0.7.0 Posture | SBOM/vulnerabilities, CMDB, webhooks, risk and remediation | Import idempotency и provenance |
 | OMEGA P4–P8 | Graph/hunting, NDR, cloud/Kubernetes/identity, OT/email/TI, SOAR, UEBA/ML | Изолированные модули, replay, safety и privacy gates |
 | OMEGA P9–P10 | Region federation, fencing, KMS grants, supply chain, compliance | DR game days, residency, signed provenance |

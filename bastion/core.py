@@ -538,6 +538,42 @@ class Store:
                 job['status'] = 'APPROVED'
             return self.put(db, p, 'responses', job, 'response.approved')
 
+    def finish_response(self, p, object_id, operation, body, version):
+        require(operation in ('reject', 'cancel'))
+        self.authorize(p, 'approve' if operation == 'reject' else 'request')
+        exact_fields(body, ['reason'], ['reason'])
+        reason = text_field(body, 'reason', 2000)
+        with self.tx() as db:
+            self.live_principal(db, p)
+            job = self.get(db, p, 'responses', object_id)
+            require(job['version'] == version, 'version_conflict', 'Версия изменилась', 409)
+            require(job['expires_at'] > time.time(), 'expired', 'Срок заявки истёк', 409)
+            if operation == 'reject':
+                require(p['subject'] != job['created_by'], 'self_approval', 'Инициатор может отменить свою заявку', 403)
+                require(job['status'] == 'PENDING_APPROVAL', 'invalid_state', 'Отказ доступен до согласования', 409)
+            else:
+                require(p['subject'] == job['created_by'] or p['role'] in ('admin', 'lead'),
+                        'forbidden', 'Отменить может инициатор или руководитель', 403)
+                require(job['status'] in ('PENDING_APPROVAL', 'APPROVED'), 'invalid_state', 'Заявка уже завершена', 409)
+            job.update(status='REJECTED' if operation == 'reject' else 'CANCELLED', version=version+1,
+                       resolution={'actor': p['subject'], 'reason': reason, 'time': utc()})
+            return self.put(db, p, 'responses', job, 'response.'+operation)
+
+    def expire_responses(self, limit=100):
+        require(type(limit) is int and 1 <= limit <= 1000)
+        with self.tx() as db:
+            rows = db.execute("SELECT tenant,body FROM objects WHERE kind='responses' "
+                              "AND json_extract(body,'$.status') IN ('PENDING_APPROVAL','APPROVED') "
+                              "AND json_extract(body,'$.expires_at')<=? ORDER BY json_extract(body,'$.expires_at'),id LIMIT ?",
+                              (time.time(), limit)).fetchall()
+            for row in rows:
+                job = json.loads(row['body'])
+                p = {'tenant': row['tenant'], 'subject': 'response-expiry-worker', 'role': 'admin'}
+                job.update(status='EXPIRED', version=job['version']+1,
+                           resolution={'actor': p['subject'], 'reason': 'TTL истёк', 'time': utc()})
+                self.put(db, p, 'responses', job, 'response.expired')
+            return len(rows)
+
     def evidence(self, p, body):
         self.authorize(p, 'case')
         exact_fields(body, ['case_id', 'name', 'content'], ['case_id', 'name', 'content'])
@@ -571,25 +607,52 @@ class Store:
 
 
 def verify(bundle, expected_checkpoint=None):
-    require(bundle.get('format') == 'bastion-evidence-v1')
-    previous = ZERO
+    """Validate the local bundle; malformed input never escapes as a parser traceback."""
+    try:
+        return _verify(bundle, expected_checkpoint)
+    except Problem:
+        raise
+    except (KeyError, TypeError, ValueError, AttributeError, OverflowError, RecursionError):
+        raise Problem(400, 'invalid_bundle', 'Некорректная структура evidence bundle') from None
+
+
+def _verify(bundle, expected_checkpoint):
+    require(isinstance(bundle, dict) and bundle.get('format') == 'bastion-evidence-v1', 'invalid_bundle')
+    require(isinstance(bundle['tenant_id'], str) and bool(bundle['tenant_id']), 'invalid_bundle')
+    require(isinstance(bundle['audit'], list) and isinstance(bundle['evidence'], list), 'invalid_bundle')
+    require(bundle.get('signature') is None and bundle.get('trust') == 'unanchored-local-hash-chain', 'invalid_bundle')
+    def hash_value(value):
+        require(isinstance(value, str) and len(value) == 64 and all(c in '0123456789abcdef' for c in value), 'invalid_bundle')
+        return value
+    checkpoint = hash_value(bundle['checkpoint'])
+    if expected_checkpoint is not None:
+        hash_value(expected_checkpoint)
+    previous, last_seq, acquisitions = ZERO, 0, {}
     for entry in bundle['audit']:
-        require(entry['body']['tenant_id'] == bundle['tenant_id'], 'integrity_error')
-        expected = hashlib.sha256((previous + canonical(entry['body'])).encode()).hexdigest()
-        require(entry['prev_hash'] == previous and hmac.compare_digest(expected, entry['hash']), 'integrity_error')
+        require(type(entry['seq']) is int and entry['seq'] > last_seq, 'integrity_error')
+        last_seq = entry['seq']
+        body = entry['body']
+        require(body['tenant_id'] == bundle['tenant_id'], 'integrity_error')
+        require(isinstance(body['action'], str) and isinstance(body['resource'], str)
+                and isinstance(body['details'], dict), 'invalid_bundle')
+        expected = hashlib.sha256((previous + canonical(body)).encode()).hexdigest()
+        require(hash_value(entry['prev_hash']) == previous
+                and hmac.compare_digest(expected, hash_value(entry['hash'])), 'integrity_error')
         previous = expected
-    require(hmac.compare_digest(previous, bundle['checkpoint']), 'integrity_error')
-    if expected_checkpoint:
+        if body['action'] == 'evidence.acquired':
+            require(body['resource'] not in acquisitions, 'integrity_error')
+            acquisitions[body['resource']] = hash_value(body['details']['body_sha256'])
+    require(hmac.compare_digest(previous, checkpoint), 'integrity_error')
+    if expected_checkpoint is not None:
         require(hmac.compare_digest(previous, expected_checkpoint), 'checkpoint_mismatch')
-    expected_ids = {e['body']['resource'] for e in bundle['audit'] if e['body']['action'] == 'evidence.acquired'}
     actual_ids = [obj['id'] for obj in bundle['evidence']]
-    require(len(actual_ids) == len(set(actual_ids)) and set(actual_ids) == expected_ids, 'missing_evidence')
+    require(all(isinstance(i, str) for i in actual_ids), 'invalid_bundle')
+    require(len(actual_ids) == len(set(actual_ids)) and set(actual_ids) == set(acquisitions), 'missing_evidence')
     for obj in bundle['evidence']:
         require(obj['tenant_id'] == bundle['tenant_id'], 'integrity_error')
+        require(isinstance(obj['content_base64'], str) and type(obj['size']) is int and obj['size'] >= 0, 'invalid_bundle')
         raw = base64.b64decode(obj['content_base64'], validate=True)
-        require(hashlib.sha256(raw).hexdigest() == obj['sha256'] and len(raw) == obj['size'], 'integrity_error')
-        require(any(e['body']['action'] == 'evidence.acquired' and e['body']['resource'] == obj['id']
-                    and e['body']['details'].get('body_sha256') == digest(obj)
-                    for e in bundle['audit']), 'missing_custody')
+        require(hashlib.sha256(raw).hexdigest() == hash_value(obj['sha256']) and len(raw) == obj['size'], 'integrity_error')
+        require(acquisitions[obj['id']] == digest(obj), 'missing_custody')
     return {'valid': True, 'evidence_count': len(bundle['evidence']), 'audit_count': len(bundle['audit']),
-            'anchored': bool(expected_checkpoint)}
+            'anchored': expected_checkpoint is not None}

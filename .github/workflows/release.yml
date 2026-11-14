@@ -46,4 +46,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.version.outputs.tag }}
           TARGET_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: gh release create "$RELEASE_TAG" Bastion-Grid-source.zip SHA256SUMS --target "$TARGET_SHA" --prerelease --title "BASTION GRID $RELEASE_TAG — Rule Lab and Search" --notes-file docs/acceptance/RELEASE_NOTES.md
+        run: gh release create "$RELEASE_TAG" Bastion-Grid-source.zip SHA256SUMS --target "$TARGET_SHA" --prerelease --title "BASTION GRID $RELEASE_TAG — Evidence and Response Lifecycle" --notes-file docs/acceptance/RELEASE_NOTES.md

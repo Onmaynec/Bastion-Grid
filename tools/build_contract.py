@@ -74,6 +74,7 @@ schemas['FixtureResult'] = obj({'rule_id':S,'rule_version':I,'dry_run':{'const':
     'results':{'type':'array','items':obj({'index':I,'matched':{'type':'boolean'},'expected':{'type':'boolean'},
         'passed':{'type':'boolean'},'conditions':{'type':'array','items':{'type':'boolean'}}},
         ['index','matched','expected','passed','conditions'])}}, ['rule_id','rule_version','dry_run','passed','total','results'])
+schemas['ResponseResolution'] = obj({'reason':{'type':'string','minLength':1,'maxLength':2000}}, ['reason'])
 schemas.update({
     'AccessPolicy': obj({'groups': {'type':'array','minItems':1,'maxItems':50,'uniqueItems':True,
                                    'items':{'type':'string','minLength':1,'maxLength':100}},
@@ -165,6 +166,8 @@ endpoint('rules/{id}/publish','post','Независимая публикаци�
 endpoint('rules/{id}/test','post','Проверка 1–100 примеров без записи алертов','RuleFixtures','FixtureResult')
 endpoint('rules/{id}/replay','post','Replay до 10 000 событий без алертов','Empty','Replay')
 endpoint('cases/{id}/status','patch','Переход состояния кейса','Transition',version=True)
+endpoint('responses/{id}/reject','post','Отказ независимого согласующего с причиной','ResponseResolution','Resource',version=True)
+endpoint('responses/{id}/cancel','post','Отмена инициатором или руководителем','ResponseResolution','Resource',version=True)
 endpoint('responses/{id}/approvals','post','Независимый голос согласования','Empty',version=True)
 endpoint('evidence/export','get','Экспорт без цифровой подписи',response='Bundle')
 endpoint('session','post','Лабораторный вход','SessionInput','Session',anonymous=True)
@@ -194,7 +197,7 @@ for item in paths.values():
     for operation in item.values():
         operation['responses']['429']['headers']={'Retry-After':{'schema':{'type':'integer'},
             'description':'Рекомендуемый интервал повторного запроса в секундах; это не обещание освобождения квоты.'}}
-contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.5.0',
+contract={'openapi':'3.1.0','info':{'title':'BASTION GRID local lab API','version':'0.6.0',
  'description':'Контракт реализованного лабораторного подмножества. Отличия маршрутов от целевого RFP — ADR-004. Не production API.'},
  'servers':[{'url':'http://127.0.0.1:8080'}], 'paths':paths,
  'components':{'schemas':schemas,'securitySchemes':{'bearerAuth':{'type':'http','scheme':'bearer'},
