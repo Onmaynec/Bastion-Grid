@@ -77,8 +77,8 @@ class CollectorTests(unittest.TestCase):
                 config_file(self.config_path)
 
     def test_collector_paths_are_relative_to_config(self):
-        self.assertEqual(self.config['token_file'], str(self.root/'key.txt'))
-        self.assertEqual(self.config['spool'], str(self.root/'spool.sqlite3'))
+        self.assertEqual(self.config['token_file'], str((self.root/'key.txt').resolve()))
+        self.assertEqual(self.config['spool'], str((self.root/'spool.sqlite3').resolve()))
 
     def test_collector_allowlisted_observation(self):
         self.c.sample()
