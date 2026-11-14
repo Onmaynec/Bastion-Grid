@@ -22,7 +22,7 @@ jobs:
       - run: python tools/build_traceability.py
       - run: git diff --exit-code -- spec/openapi.json docs/acceptance
   browser:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
