@@ -1,5 +1,5 @@
 {
-  "release": "0.6.0",
+  "release": "0.7.0",
   "scope": "local-lab",
   "full_rfp_accepted": false,
   "requirements": [
@@ -932,8 +932,11 @@
     },
     {
       "id": "VUL-001",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_posture_import_atomic_and_idempotent",
+        "test_posture_conflicting_observation_rolls_back"
+      ],
       "accepted": false
     },
     {
@@ -974,8 +977,11 @@
     },
     {
       "id": "VUL-008",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_posture_fixed_requires_same_asset_evidence",
+        "test_posture_plan_requires_date_and_owner"
+      ],
       "accepted": false
     },
     {
@@ -998,8 +1004,11 @@
     },
     {
       "id": "VUL-012",
-      "status": "not_implemented",
-      "tests": [],
+      "status": "partial_lab",
+      "tests": [
+        "test_posture_stale_and_invalid_transition",
+        "test_posture_terminal_decisions_require_lead"
+      ],
       "accepted": false
     },
     {

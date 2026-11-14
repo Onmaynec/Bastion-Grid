@@ -1,4 +1,4 @@
-# Матрица реализации 0.6.0
+# Матрица реализации 0.7.0
 
 `partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. `not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.
 
@@ -142,18 +142,18 @@
 | RSP-013 | not_implemented |  |
 | RSP-014 | not_implemented |  |
 | RSP-015 | not_implemented |  |
-| VUL-001 | not_implemented |  |
+| VUL-001 | partial_lab | test_posture_import_atomic_and_idempotent, test_posture_conflicting_observation_rolls_back |
 | VUL-002 | not_implemented |  |
 | VUL-003 | not_implemented |  |
 | VUL-004 | not_implemented |  |
 | VUL-005 | not_implemented |  |
 | VUL-006 | not_implemented |  |
 | VUL-007 | not_implemented |  |
-| VUL-008 | not_implemented |  |
+| VUL-008 | partial_lab | test_posture_fixed_requires_same_asset_evidence, test_posture_plan_requires_date_and_owner |
 | VUL-009 | not_implemented |  |
 | VUL-010 | not_implemented |  |
 | VUL-011 | not_implemented |  |
-| VUL-012 | not_implemented |  |
+| VUL-012 | partial_lab | test_posture_stale_and_invalid_transition, test_posture_terminal_decisions_require_lead |
 | VUL-013 | not_implemented |  |
 | VUL-014 | not_implemented |  |
 | INT-001 | partial_lab | test_contract_routes |

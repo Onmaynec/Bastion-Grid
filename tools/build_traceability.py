@@ -3,6 +3,9 @@ import json
 from pathlib import Path
 
 PARTIAL = {
+ 'VUL-001':['test_posture_import_atomic_and_idempotent','test_posture_conflicting_observation_rolls_back'],
+ 'VUL-008':['test_posture_fixed_requires_same_asset_evidence','test_posture_plan_requires_date_and_owner'],
+ 'VUL-012':['test_posture_stale_and_invalid_transition','test_posture_terminal_decisions_require_lead'],
  'WIN-007':['test_collector_queue_cap_preserves_oldest','test_collector_restart_preserves_event_ids'],
  'LNX-008':['test_collector_byte_cap','test_collector_lost_ack_replays_identical_event'],
  'WIN-011':['test_collector_cli_sample_and_status'],
@@ -48,11 +51,11 @@ def build():
             identifier=item['id']
             records.append({'id':identifier,'status':'partial_lab' if identifier in PARTIAL else 'not_implemented',
                             'tests':PARTIAL.get(identifier,[]), 'accepted':False})
-    output={'release':'0.6.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
+    output={'release':'0.7.0','scope':'local-lab','full_rfp_accepted':False,'requirements':records,
             'formal_acceptance':{'passed':0,'total':len(source['acceptance_tests']),
                                  'e2e_passed':0,'e2e_total':len(source['omega_e2e'])}}
     Path('docs/acceptance/coverage.json').write_text(json.dumps(output,ensure_ascii=False,indent=2)+'\n', encoding='utf-8', newline='\n')
-    lines=['# Матрица реализации 0.6.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
+    lines=['# Матрица реализации 0.7.0','','`partial_lab` — проверен отдельный локальный механизм, но требование целиком не принято. '
            '`not_implemented` — реализации нет. Ни один AT или OMEGA E2E не объявлен пройденным.','',
            '| Требование | Состояние | Локальные тесты |','|---|---|---|']
     for r in records:

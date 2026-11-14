@@ -56,10 +56,33 @@ def main():
                 page.locator('.stats').wait_for()
                 assert page.locator('.number').count() == 4
                 page.screenshot(path=str(output/'overview.png'), full_page=True)
-                for key in ['alerts', 'assets', 'events', 'rules', 'cases', 'responses', 'audit', 'identities', 'sessions', 'telemetry']:
+                for key in ['alerts', 'assets', 'events', 'rules', 'cases', 'responses', 'audit', 'identities', 'sessions', 'telemetry', 'findings']:
                     page.locator(f'[data-page="{key}"]').click()
                     page.locator('#content .panel').first.wait_for()
                     assert page.locator('#content').inner_text().strip()
+                page.locator('[data-page="findings"]').click()
+                page.locator('[data-action="import-findings"]').click()
+                document=page.locator('#f-document').input_value()
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_role('cell',name='demo-package 1.0',exact=True).wait_for()
+                page.locator('[data-action="import-findings"]').click()
+                page.locator('#f-document').fill(document)
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                assert page.locator('#content tbody tr').count()==1
+                page.locator('[data-action="finding-workflow"]').click()
+                page.locator('#f-status').select_option('remediation_planned')
+                page.locator('#f-owner').fill('analyst')
+                page.locator('#f-due_date').fill('2026-12-01')
+                page.locator('#f-reason').fill('Плановое обновление компонента')
+                page.locator('#submit-modal').click()
+                page.locator('#modal').wait_for(state='hidden')
+                page.get_by_text('remediation_planned',exact=True).wait_for()
+                page.screenshot(path=str(output/'posture.png'),full_page=True)
+                page.locator('[data-action="inspect-finding"]').click()
+                assert 'manual-import-unverified' in page.locator('#fields pre').inner_text()
+                page.locator('#close-modal').click()
                 page.locator('[data-page="telemetry"]').click()
                 page.locator('[data-action="retry-dead"]').wait_for()
                 page.screenshot(path=str(output/'telemetry.png'), full_page=True)
@@ -195,7 +218,7 @@ def main():
                 page.locator('#login').wait_for(state='visible')
                 assert not errors, errors
                 browser.close()
-                print('UI: 11 sections, source binding/pause/resume, quotas, DLQ retry, filtered cursor, composite fixtures, response reject/cancel, access, XSS, 390px — PASS')
+                print('UI: 12 sections, source binding/pause/resume, quotas, DLQ retry, filtered cursor, composite fixtures, response reject/cancel, posture import/dedup/plan, access, XSS, 390px — PASS')
         finally:
             server.shutdown()
             thread.join()

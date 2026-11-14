@@ -1,0 +1,15 @@
+{
+  "source": "manual-scanner",
+  "observed_at": "2026-11-15T00:00:00Z",
+  "findings": [
+    {
+      "external_id": "scan-2026-11-15-demo-1",
+      "asset_id": "REPLACE_WITH_ASSET_UUID",
+      "title": "Проверка тестового компонента",
+      "component": "demo-package",
+      "component_version": "1.0",
+      "vulnerability_id": "LAB-001",
+      "severity": "high"
+    }
+  ]
+}

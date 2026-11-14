@@ -15,7 +15,8 @@
 | Analytics completion | ClickHouse/search, temporal rules, watermark, replay jobs | Quality suite и R1 search benchmark |
 | 0.6.0 Evidence and Response Lifecycle | Отказ/отмена, сохранение EXPIRED, строгий verifier и линейный поиск custody | Локальные регрессии; исполнение отключено |
 | Evidence/response completion | PKI/KMS, immutable vault, signatures, agent receipts, bounded reversible actions | Quorum/MFA, TTL, rollback и verifier с trust anchor |
-| 0.7.0 Posture | SBOM/vulnerabilities, CMDB, webhooks, risk and remediation | Import idempotency и provenance |
+| 0.7.0 Local Posture | Импорт находок, дедупликация, provenance, приоритет, план исправления | Локальные регрессии; промышленный Posture не завершён |
+| Posture completion | SBOM, CMDB, webhooks, CVE feed, сверка сканов | Импорт стандартных форматов, reconciliation и подтверждение исправлений |
 | OMEGA P4–P8 | Graph/hunting, NDR, cloud/Kubernetes/identity, OT/email/TI, SOAR, UEBA/ML | Изолированные модули, replay, safety и privacy gates |
 | OMEGA P9–P10 | Region federation, fencing, KMS grants, supply chain, compliance | DR game days, residency, signed provenance |
 | OMEGA P11 | Полная эксплуатационная приёмка | Все AT/E2E, независимая проверка, документация и передача |

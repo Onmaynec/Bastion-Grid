@@ -83,6 +83,8 @@ class Store:
         self.access = AccessControl(self)
         from .telemetry import Telemetry
         self.telemetry = Telemetry(self)
+        from .posture import Posture
+        self.posture = Posture(self)
 
     def _connect(self):
         db = sqlite3.connect(self.path, timeout=10, isolation_level=None)
@@ -171,9 +173,10 @@ class Store:
             return asset_allowed(p, obj)
         if kind == 'rules':
             return unrestricted(p)
-        if kind in {'events', 'alerts'}:
+        if kind in {'events', 'alerts', 'findings'}:
             asset = self.raw_object(db, p['tenant'], 'assets', obj.get('asset_id'))
-            return asset is not None and asset_allowed(p, asset)
+            return (asset is not None and asset_allowed(p, asset) and
+                    (kind != 'findings' or not policy_of(p)['assigned_only'] or obj.get('owner') == p['subject']))
         if kind == 'cases':
             alert = self.raw_object(db, p['tenant'], 'alerts', obj.get('alert_id'))
             return (self.visible(db, p, 'alerts', alert) and

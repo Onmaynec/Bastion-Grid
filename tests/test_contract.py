@@ -8,7 +8,7 @@ class ContractTests(unittest.TestCase):
     def test_contract_routes(self):
         contract = json.loads(Path('spec/openapi.json').read_text(encoding='utf-8'))
         self.assertEqual(contract['openapi'], '3.1.0')
-        self.assertEqual(sum(len(ops) for ops in contract['paths'].values()), 40)
+        self.assertEqual(sum(len(ops) for ops in contract['paths'].values()), 43)
         for ops in contract['paths'].values():
             for op in ops.values():
                 self.assertIn('200', op['responses'])
